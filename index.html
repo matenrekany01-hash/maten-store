@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="ku" dir="rtl">
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -6,7 +7,7 @@
     <meta http-equiv="Content-Language" content="ku">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* زیادکردنی فۆنتی NRT */
+        /* ستایلەکان وەک خۆیانن - هیچ گۆڕانکارییەک لێرە نییە */
         @font-face {
             font-family: 'NRT';
             src: url('https://www.nrttv.com/css/fonts/NRT-Reg.woff2') format('woff2'),
@@ -20,8 +21,6 @@
         font-weight: bold;
         font-display: swap;
     }
-
-    /* ستایلەکانی ناو فایلەکەی خۆت */
     :root {
         --primary-color: #1a365d;
         --primary-light: #2a4365;
@@ -37,495 +36,72 @@
         --section-bg: #ffffff;
         --section-border: #cbd5e0;
     }
-
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'NRT', sans-serif;
-    }
-
-    body {
-        background-color: var(--light-gray);
-        color: var(--text-color);
-        direction: rtl;
-        transition: background-color 0.3s, color 0.3s;
-    }
-
-    .app-container {
-        max-width: 100%;
-        margin: 0 auto;
-        background-color: white;
-        min-height: 100vh;
-        position: relative;
-    }
-
-    .app-header {
-        background-color: white;
-        color: var(--primary-color);
-        padding: 12px 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        border-bottom: 2px solid var(--accent-color);
-    }
-
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .logo-bottom {
-        font-size: 22px;
-        font-weight: bold;
-        color: var(--primary-color);
-    }
-
-    .user-actions {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .user-actions button {
-        color: var(--primary-color);
-        background: none;
-        border: none;
-        font-size: 18px;
-        cursor: pointer;
-        position: relative;
-    }
-
-    .main-content {
-        padding-bottom: 70px;
-    }
-
-    .section {
-        background-color: var(--section-bg);
-        border-radius: 8px;
-        margin: 12px;
-        padding: 12px;
-        border: 1px solid var(--section-border);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .section-title {
-        font-size: 17px;
-        margin-bottom: 12px;
-        color: var(--primary-color);
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: bold;
-    }
-
-    .categories {
-        display: flex;
-        overflow-x: auto;
-        padding: 8px 0;
-        gap: 8px;
-        scrollbar-width: none;
-    }
-
-    .categories::-webkit-scrollbar {
-        display: none;
-    }
-
-    .category-btn {
-        background-color: var(--light-gray);
-        border: none;
-        padding: 6px 12px;
-        border-radius: 18px;
-        white-space: nowrap;
-        cursor: pointer;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        border: 1px solid var(--section-border);
-    }
-    
-    .category-btn.active {
-        background-color: var(--primary-color);
-        color: white;
-        border-color: var(--primary-color);
-        font-weight: bold;
-    }
-
-    .search-container {
-        margin: 12px;
-        position: relative;
-    }
-
-    .search-input {
-        width: 100%;
-        padding: 10px 40px 10px 12px;
-        border: 1px solid var(--section-border);
-        border-radius: 6px;
-        font-size: 15px;
-    }
-
-    .search-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--dark-gray);
-    }
-
-    .products-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 12px;
-    }
-
-    .product-card {
-        background-color: white;
-        border-radius: 8px;
-        overflow: hidden;
-        position: relative;
-        border: 1px solid var(--section-border);
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .product-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    .product-image-container {
-        width: 100%;
-        aspect-ratio: 1/1;
-        position: relative; /* Added for badge positioning */
-    }
-
-    .product-image {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        padding: 10px;
-    }
-
-    .product-info {
-        padding: 8px;
-    }
-
-    .product-name {
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    .product-price-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 4px;
-    }
-
-    .product-price {
-        color: var(--accent-light);
-        font-weight: 700;
-        font-size: 15px;
-    }
-
-    .original-price {
-        color: var(--dark-gray);
-        text-decoration: line-through;
-        font-size: 13px;
-    }
-    
-    .discount-badge {
-        position: absolute;
-        top: 8px;
-        right: 8px;
-        background-color: var(--danger-color);
-        color: white;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-
-    .product-actions {
-        position: absolute;
-        top: 5px;
-        left: 5px;
-        display: none;
-        gap: 5px;
-        flex-direction: column;
-    }
-    
-    .product-card:hover .product-actions {
-        display: flex;
-    }
-
-    .edit-btn, .delete-btn {
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        border: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 13px;
-        color: white;
-        cursor: pointer;
-    }
-
-    .edit-btn {
-        background-color: var(--accent-color);
-    }
-
-    .delete-btn {
-        background-color: var(--danger-color);
-    }
-
-    .add-to-cart-btn {
-        position: absolute;
-        bottom: 8px;
-        right: 8px;
-        width: 30px;
-        height: 30px;
-        background-color: var(--accent-color);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        opacity: 0;
-        transition: opacity 0.2s;
-    }
-
-    .product-card:hover .add-to-cart-btn {
-        opacity: 1;
-    }
-
-    .cart-count {
-        position: absolute;
-        top: -8px;
-        right: -8px;
-        background-color: var(--danger-light);
-        color: white;
-        border-radius: 50%;
-        width: 18px;
-        height: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 11px;
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 200;
-        overflow-y: auto; /* Added for scrollable modal */
-    }
-
-    .modal-content {
-        background-color: white;
-        margin: 30px auto;
-        padding: 20px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 450px;
-        position: relative;
-    }
-
-    .close {
-        position: absolute;
-        top: 12px;
-        left: 12px;
-        font-size: 22px;
-        cursor: pointer;
-    }
-
-    .form-group {
-        margin-bottom: 16px;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: bold;
-    }
-
-    .form-group input, .form-group select, .form-group textarea {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid var(--section-border);
-        border-radius: 6px;
-    }
-
-    button[type="submit"] {
-        background-color: var(--accent-color);
-        color: white;
-        border: none;
-        padding: 12px;
-        border-radius: 6px;
-        cursor: pointer;
-        width: 100%;
-        font-weight: bold;
-    }
-
-    .notification {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        padding: 12px 16px;
-        border-radius: 6px;
-        color: white;
-        z-index: 300;
-        opacity: 0;
-        transform: translateX(100%);
-        transition: all 0.3s;
-    }
-
-    .notification.show {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    .notification.success {
-        background-color: var(--accent-color);
-    }
-
-    .notification.error {
-        background-color: var(--danger-color);
-    }
-
-    .add-product-btn {
-        display: none;
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        width: 50px;
-        height: 50px;
-        background-color: var(--accent-color);
-        border-radius: 50%;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 20px;
-        cursor: pointer;
-        z-index: 80;
-    }
-
-    .cart-item {
-        display: flex;
-        align-items: center;
-        padding: 12px 0;
-        border-bottom: 1px solid var(--section-border);
-    }
-
-    .cart-item-image {
-        width: 60px;
-        height: 60px;
-        object-fit: contain;
-        border-radius: 6px;
-        margin-left: 10px;
-    }
-
-    .cart-item-details {
-        flex: 1;
-    }
-    
-    .cart-item-title {
-        font-weight: bold;
-    }
-
-    .cart-item-remove {
-        color: var(--danger-color);
-        background: none;
-        border: none;
-        cursor: pointer;
-    }
-
-    .cart-total {
-        font-weight: bold;
-        font-size: 17px;
-        margin-top: 12px;
-        text-align: left;
-    }
-
-    .cart-empty {
-        text-align: center;
-        padding: 25px;
-        color: var(--dark-gray);
-    }
-    
-    .cart-empty i {
-        font-size: 45px;
-        margin-bottom: 12px;
-        color: #ddd;
-    }
-
-    .whatsapp-btn, .viber-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 10px;
-        border-radius: 6px;
-        font-weight: bold;
-        cursor: pointer;
-        margin-top: 10px;
-        width: 100%;
-        border: none;
-        color: white;
-    }
-
-    .whatsapp-btn {
-        background-color: #25D366;
-    }
-
-    .viber-btn {
-        background-color: #7360F2;
-    }
-
-    /* floating quick contact buttons */
-    .quick-contact {
-        position: fixed;
-        bottom: 20px;
-        left: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        z-index: 500;
-    }
-
-    .quick-contact a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 12px;
-        border-radius: 8px;
-        color: white;
-        text-decoration: none;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-        font-weight: bold;
-    }
-
-    .quick-contact .wh {
-        background: linear-gradient(90deg,#19b56a,#25D366);
-    }
-
-    .quick-contact .vi {
-        background: linear-gradient(90deg,#5b46f0,#7360F2);
-    }
-</style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'NRT', sans-serif; }
+    body { background-color: var(--light-gray); color: var(--text-color); direction: rtl; transition: background-color 0.3s, color 0.3s; }
+    .app-container { max-width: 100%; margin: 0 auto; background-color: white; min-height: 100vh; position: relative; }
+    .app-header { background-color: white; color: var(--primary-color); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); border-bottom: 2px solid var(--accent-color); }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-bottom { font-size: 22px; font-weight: bold; color: var(--primary-color); }
+    .user-actions { display: flex; align-items: center; gap: 15px; }
+    .user-actions button { color: var(--primary-color); background: none; border: none; font-size: 18px; cursor: pointer; position: relative; }
+    .main-content { padding-bottom: 70px; }
+    .section { background-color: var(--section-bg); border-radius: 8px; margin: 12px; padding: 12px; border: 1px solid var(--section-border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+    .section-title { font-size: 17px; margin-bottom: 12px; color: var(--primary-color); display: flex; align-items: center; gap: 8px; font-weight: bold; }
+    .categories { display: flex; overflow-x: auto; padding: 8px 0; gap: 8px; scrollbar-width: none; }
+    .categories::-webkit-scrollbar { display: none; }
+    .category-btn { background-color: var(--light-gray); border: none; padding: 6px 12px; border-radius: 18px; white-space: nowrap; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 4px; border: 1px solid var(--section-border); }
+    .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); font-weight: bold; }
+    .search-container { margin: 12px; position: relative; }
+    .search-input { width: 100%; padding: 10px 40px 10px 12px; border: 1px solid var(--section-border); border-radius: 6px; font-size: 15px; }
+    .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--dark-gray); }
+    .products-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .product-card { background-color: white; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--section-border); transition: transform 0.2s, box-shadow 0.2s; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
+    .product-image-container { width: 100%; aspect-ratio: 1/1; position: relative; }
+    .product-image { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
+    .product-info { padding: 8px; }
+    .product-name { font-weight: bold; font-size: 14px; }
+    .product-price-container { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .product-price { color: var(--accent-light); font-weight: 700; font-size: 15px; }
+    .original-price { color: var(--dark-gray); text-decoration: line-through; font-size: 13px; }
+    .discount-badge { position: absolute; top: 8px; right: 8px; background-color: var(--danger-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+    .product-actions { position: absolute; top: 5px; left: 5px; display: none; gap: 5px; flex-direction: column; }
+    .product-card:hover .product-actions { display: flex; }
+    .edit-btn, .delete-btn { width: 28px; height: 28px; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; font-size: 13px; color: white; cursor: pointer; }
+    .edit-btn { background-color: var(--accent-color); }
+    .delete-btn { background-color: var(--danger-color); }
+    .add-to-cart-btn { position: absolute; bottom: 8px; right: 8px; width: 30px; height: 30px; background-color: var(--accent-color); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+    .product-card:hover .add-to-cart-btn { opacity: 1; }
+    .cart-count { position: absolute; top: -8px; right: -8px; background-color: var(--danger-light); color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 200; overflow-y: auto; }
+    .modal-content { background-color: white; margin: 30px auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 450px; position: relative; }
+    .close { position: absolute; top: 12px; left: 12px; font-size: 22px; cursor: pointer; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; margin-bottom: 6px; font-weight: bold; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--section-border); border-radius: 6px; }
+    button[type="submit"] { background-color: var(--accent-color); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
+    .notification { position: fixed; top: 15px; right: 15px; padding: 12px 16px; border-radius: 6px; color: white; z-index: 300; opacity: 0; transform: translateX(100%); transition: all 0.3s; }
+    .notification.show { opacity: 1; transform: translateX(0); }
+    .notification.success { background-color: var(--accent-color); }
+    .notification.error { background-color: var(--danger-color); }
+    .add-product-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: var(--accent-color); border-radius: 50%; align-items: center; justify-content: center; color: white; font-size: 20px; cursor: pointer; z-index: 80; }
+    .cart-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--section-border); }
+    .cart-item-image { width: 60px; height: 60px; object-fit: contain; border-radius: 6px; margin-left: 10px; }
+    .cart-item-details { flex: 1; }
+    .cart-item-title { font-weight: bold; }
+    .cart-item-remove { color: var(--danger-color); background: none; border: none; cursor: pointer; }
+    .cart-total { font-weight: bold; font-size: 17px; margin-top: 12px; text-align: left; }
+    .cart-empty { text-align: center; padding: 25px; color: var(--dark-gray); }
+    .cart-empty i { font-size: 45px; margin-bottom: 12px; color: #ddd; }
+    .cart-actions { display:none; margin-top: 15px; }
+    .whatsapp-btn, .viber-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; border: none; color: white; }
+    .whatsapp-btn { background-color: #25D366; }
+    .viber-btn { background-color: #7360F2; }
+    .quick-contact { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 500; }
+    .quick-contact a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: white; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.08); font-weight: bold; }
+    .quick-contact .wh { background: linear-gradient(90deg,#19b56a,#25D366); }
+    .quick-contact .vi { background: linear-gradient(90deg,#5b46f0,#7360F2); }
+    </style>
 
 </head>
 <body>
@@ -649,34 +225,67 @@
         </div>
     </div>
 </div>
-<script>
-    // زانیاری بەڕێوەبەر
+<script type="module"> // <-- GORANKARI: type="module" ZIADKRA
+
+    // =========== GORANKARI: Import-krdni SDK-kani Firebase ===========
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+    import { 
+        getFirestore, 
+        collection, 
+        addDoc, 
+        doc, 
+        updateDoc, 
+        deleteDoc, 
+        onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+    // TÊBÎNÎ: Bo wênekan, pêwistt ba Firebase Storage dabêt
+    // import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+    // =================================================================
+
+    // =========== GORANKARI: Ziadkrdni Firebase Config ================
+    const firebaseConfig = {
+      apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
+      authDomain: "maten-store.firebaseapp.com",
+      projectId: "maten-store",
+      storageBucket: "maten-store.firebasestorage.app",
+      messagingSenderId: "137714858202",
+      appId: "1:137714858202:web:a3db3b3591742c3356cde3",
+      measurementId: "G-TM6SG77H5G"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+
+    // Chalakkrdni Firestore
+    const db = getFirestore(app);
+    const productsCollection = collection(db, "products");
+    // =================================================================
+
+
+    // زانیاری بەڕێوەبەر (Hêshta na parêzrawa!)
     const ADMIN_USER = { username: "maten", password: "maten411" };
     
-    // کلیلەکانی localStorage
-    const PRODUCTS_KEY = "maten_store_products";
-    const CART_KEY = "maten_store_cart";
-
-    // بارکردنی داتا
-    let products = JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || [];
-    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    // =========== GORANKARI: Labrdni localStorage bo kallakan ===========
+    // const PRODUCTS_KEY = "maten_store_products"; // Êtr pêwîst nîya
+    // let products = JSON.parse(localStorage.getItem(PRODUCTS_KEY)) || []; // Êtr pêwîst nîya
+    // if (products.length === 0) { ... } // Êtr pêwîst nîya
     
-    if (products.length === 0) {
-        products = [
-            // **** GORANKARI LEREDAYA **** - ZIADKRDNI DASHKAN BO KALLAY YEKEM
-            { id: 1, name: "ئایفۆن 13", price: 950, originalPrice: 1200, category: "electronics", image: "https://placehold.co/300x300/e2e8f0/2d3748?text=iPhone", description: "وەسفێک بۆ ئایفۆن" },
-            { id: 2, name: "لاپتۆپی دێل", price: 850, originalPrice: null, category: "electronics", image: "https://placehold.co/300x300/e2e8f0/2d3748?text=Laptop", description: "وەسفێک بۆ لاپتۆپ" },
-            { id: 3, name: "کارتی گووگڵ پلەی", price: 50, originalPrice: null, category: "general", image: "https://placehold.co/300x300/e2e8f0/2d3748?text=Card", description: "وەسفێک بۆ کارت" }
-        ];
-        saveProducts();
-    }
+    // Le jiaty awa:
+    let products = []; // Arrayaka batal dabet, Firestore prî dakatewa
+    
+    // Sebatey krîn (Cart) har la localStorage damênêtewa
+    const CART_KEY = "maten_store_cart";
+    let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    // =================================================================
 
     let isAdmin = false;
     let editingProductId = null;
     let currentCategory = 'all';
     let currentSearch = '';
 
-    // DOM Elements
+    // DOM Elements (Wek xoyan damênnewa)
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginModal = document.getElementById('loginModal');
@@ -704,15 +313,14 @@
     const productImage = document.getElementById('productImage');
     const imagePreview = document.getElementById('imagePreview');
 
-    // ====== کانفیگەراخوای واتسئاپ و فایبەر ======
+    // Kanfigey WatsApp w Viber (Wek xoy)
     const WHATSAPP_QR = 'https://wa.me/qr/GNAX4RXMYZEBM1';
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
-    // ==========================================
 
-    function saveProducts() {
-        localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
-    }
+    // =========== GORANKARI: Labrdni fankshni `saveProducts` ===========
+    // function saveProducts() { ... } // Êtr pêwîst nîya
+    // =================================================================
 
     function saveCart() {
         localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -760,7 +368,6 @@
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
             
-            // **** GORANKARI LEREDAYA - NUÈKRDNEUEY HTMLI KALLA ****
             let priceHTML = `<div class="product-price">$${product.price.toFixed(2)}</div>`;
             let discountBadgeHTML = '';
 
@@ -794,14 +401,13 @@
                 </div>
                 <button class="add-to-cart-btn" data-id="${product.id}"><i class="fas fa-cart-plus"></i></button>
             `;
-            // **** KOTAY GORANKARI ****
             
             productsContainer.appendChild(productCard);
         });
         
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const productId = parseInt(e.currentTarget.getAttribute('data-id'));
+                const productId = e.currentTarget.getAttribute('data-id'); // IDy Firestore stringa
                 addToCart(productId);
             });
         });
@@ -809,14 +415,14 @@
         if (isAdmin) {
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const productId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    const productId = e.currentTarget.getAttribute('data-id');
                     editProduct(productId);
                 });
             });
             
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const productId = parseInt(e.currentTarget.getAttribute('data-id'));
+                    const productId = e.currentTarget.getAttribute('data-id');
                     deleteProduct(productId);
                 });
             });
@@ -852,9 +458,7 @@
         editingProductId = productId;
         document.getElementById('productName').value = product.name;
         document.getElementById('productPrice').value = product.price;
-        // **** GORANKARI LEREDAYA ****
         document.getElementById('productOriginalPrice').value = product.originalPrice || '';
-        // **** KOTAY GORANKARI ****
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productDescription').value = product.description;
         imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
@@ -863,14 +467,23 @@
         productFormModal.style.display = 'block';
     }
 
-    function deleteProduct(productId) {
+    // =========== GORANKARI: Gorîni fankshni `deleteProduct` ===========
+    async function deleteProduct(productId) { // Ziadkrdni 'async'
         if (confirm('دڵنیایت دەتەوێت ئەم کاڵایە بسڕیتەوە؟')) {
-            products = products.filter(p => p.id !== productId);
-            saveProducts();
-            renderProducts();
-            showNotification('کاڵا سڕدرایەوە', 'success');
+            try {
+                // Srînewa la Firestore
+                const productRef = doc(db, "products", productId);
+                await deleteDoc(productRef);
+                
+                showNotification('کاڵا سڕدرایەوە', 'success');
+                // Pêwîst ba renderProducts() nakat, onSnapshot xoy anjamy dadat
+            } catch (error) {
+                showNotification('هەڵە لە سڕینەوە', 'error');
+                console.error("Error removing document: ", error);
+            }
         }
     }
+    // =================================================================
 
     function renderCart() {
         cartItemsContainer.innerHTML = '';
@@ -911,7 +524,7 @@
         
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const productId = parseInt(e.currentTarget.getAttribute('data-id'));
+                const productId = e.currentTarget.getAttribute('data-id');
                 removeFromCart(productId);
             });
         });
@@ -1021,79 +634,70 @@
             }
         });
         
-        productForm.addEventListener('submit', (e) => {
+        // =========== GORANKARI: Gorîni fankshni `productForm` submit ===========
+        productForm.addEventListener('submit', async (e) => { // Ziadkrdni 'async'
             e.preventDefault();
             
-            const name = document.getElementById('productName').value;
-            const price = parseFloat(document.getElementById('productPrice').value);
-            // **** GORANKARI LEREDAYA ****
-            const originalPriceInput = document.getElementById('productOriginalPrice').value;
-            const originalPrice = originalPriceInput ? parseFloat(originalPriceInput) : null;
-            // **** KOTAY GORANKARI ****
-            const category = document.getElementById('productCategory').value;
-            const description = document.getElementById('productDescription').value;
+            const productData = {
+                name: document.getElementById('productName').value,
+                price: parseFloat(document.getElementById('productPrice').value),
+                originalPrice: parseFloat(document.getElementById('productOriginalPrice').value) || null,
+                category: document.getElementById('productCategory').value,
+                description: document.getElementById('productDescription').value,
+                image: null // Le xwarawa prî dakaynewa
+            };
             
-            if (editingProductId) {
-                const productIndex = products.findIndex(p => p.id === editingProductId);
-                if (productIndex !== -1) {
-                    products[productIndex] = {
-                        ...products[productIndex],
-                        name,
-                        price,
-                        originalPrice, // **** ZIADKRA ****
-                        category,
-                        description
-                    };
-                    
-                    if (productImage.files.length > 0) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            products[productIndex].image = e.target.result;
-                            saveProducts();
-                            renderProducts();
-                            productFormModal.style.display = 'none';
-                            showNotification('کاڵا سەرکەوتووانە نوێکرایەوە', 'success');
-                        };
-                        reader.readAsDataURL(productImage.files[0]);
-                    } else {
-                        saveProducts();
-                        renderProducts();
-                        productFormModal.style.display = 'none';
-                        showNotification('کاڵا سەرکەوتووانە نوێکرایەوە', 'success');
-                    }
-                }
-            } else {
-                const newProduct = {
-                    id: Date.now(),
-                    name,
-                    price,
-                    originalPrice, // **** ZIADKRA ****
-                    category,
-                    description,
-                    image: 'https://placehold.co/300x300/e2e8f0/2d3748?text=Product'
+            const imageFile = productImage.files[0];
+
+            if (imageFile) {
+                // TÊBÎNÎ: Am rêgaya (base64) bash nîya bo Firebase!
+                // Pêwîsta ba Firebase Storage bigorrêt.
+                // Balâm bo away kodakat kar bkat, ba katî damênêtewa.
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    productData.image = e.target.result;
+                    await saveDataToFirestore(productData);
                 };
-                
-                if (productImage.files.length > 0) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        newProduct.image = e.target.result;
-                        products.push(newProduct);
-                        saveProducts();
-                        renderProducts();
-                        productFormModal.style.display = 'none';
-                        showNotification('کاڵا سەرکەوتووانە زیادکرا', 'success');
-                    };
-                    reader.readAsDataURL(productImage.files[0]);
-                } else {
-                    products.push(newProduct);
-                    saveProducts();
-                    renderProducts();
-                    productFormModal.style.display = 'none';
-                    showNotification('کاڵا سەرکەوتووانە زیادکرا', 'success');
-                }
+                reader.readAsDataURL(imageFile);
+
+            } else if (editingProductId) {
+                // Agar dastkarî bû w wênay nwêy danana
+                productData.image = products.find(p => p.id === editingProductId).image;
+                await saveDataToFirestore(productData);
+
+            } else {
+                // Agar kallaî nwê bû w wênay danana
+                productData.image = 'https://placehold.co/300x300/e2e8f0/2d3748?text=Product';
+                await saveDataToFirestore(productData);
             }
         });
-        
+
+        // Fankshnî yarîdadar bo pashekawtkrdn la Firestore
+        async function saveDataToFirestore(data) {
+            try {
+                if (editingProductId) {
+                    // Destkarîkrdn
+                    const productRef = doc(db, "products", editingProductId);
+                    await updateDoc(productRef, data);
+                    showNotification('کاڵا سەرکەوتووانە نوێکرایەوە', 'success');
+                } else {
+                    // Ziadkrdnî nwê
+                    await addDoc(productsCollection, data);
+                    showNotification('کاڵا سەرکەوتووانە زیادکرا', 'success');
+                }
+                
+                productFormModal.style.display = 'none';
+                editingProductId = null;
+                productForm.reset();
+                imagePreview.innerHTML = 'پێشبینی وێنە';
+
+            } catch (error) {
+                console.error("هەڵە لە پاشەکەوتکردن: ", error);
+                showNotification('هەڵەیەک ڕوویدا', 'error');
+            }
+        }
+        // =================================================================
+
         productImage.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
@@ -1134,11 +738,23 @@
         });
     }
 
+    // =========== GORANKARI: Gorîni fankshni `init` ===========
     function init() {
-        renderProducts();
+        // Gwêgrtn la gorrankarîyakanî Firestore
+        onSnapshot(productsCollection, (snapshot) => {
+            products = snapshot.docs.map(doc => ({ 
+                id: doc.id, 
+                ...doc.data() 
+            }));
+            
+            // Nwêkrdnewey nîshandanî kallakan
+            renderProducts();
+        });
+        
         updateCartCount();
         setupEventListeners();
     }
+    // =================================================================
 
     document.addEventListener('DOMContentLoaded', init);
 </script>
