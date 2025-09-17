@@ -245,6 +245,7 @@
                     <input type="text" id="productImageUrl" placeholder="لێرە لینکی وێنەکە دابنێ..." required>
                     <div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div>
                 </div>
+                
                 <button type="submit">پاشەکەوتکردن</button>
             </form>
         </div>
@@ -262,18 +263,19 @@
         doc, 
         updateDoc, 
         deleteDoc, 
-        onSnapshot 
+        onSnapshot,
+        // === GORANKARI 1: ZYADKRDNI query w orderBy bo sort krdn ===
+        query,
+        orderBy
     } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
     
-    // === GORANKARI: Firebase Storage SRDRAYAWA, CHI TIR PEWIST NIYE ===
-    // =================================================================
 
     // =========== Firebase Config ================
     const firebaseConfig = {
       apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE", // تکایە زانیاری خۆت دابنێ
       authDomain: "maten-store.firebaseapp.com",
       projectId: "maten-store",
-      storageBucket: "maten-store.appspot.com", // ئەمە ئاساییە ئەگەر بمێنێتەوە
+      storageBucket: "maten-store.appspot.com", 
       messagingSenderId: "137714858202",
       appId: "1:137714858202:web:a3db3b3591742c3356cde3",
       measurementId: "G-TM6SG77H5G"
@@ -284,9 +286,7 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    // === GORANKARI: Storage srdrawa ===
     const productsCollection = collection(db, "products");
-    // =================================================================
     
     const CART_KEY = "maten_store_cart";
     let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -323,7 +323,6 @@
     const productForm = document.getElementById('productForm');
     const formTitle = document.getElementById('formTitle');
     const imagePreview = document.getElementById('imagePreview');
-    // === GORANKARI: Danani ID bo inputi linki wenaka ===
     const productImageUrlInput = document.getElementById('productImageUrl');
 
 
@@ -459,14 +458,12 @@
         document.getElementById('productOriginalPrice').value = product.originalPrice || '';
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productDescription').value = product.description || '';
-        // === GORANKARI: Prikrdni inputi linki wenaka ===
         productImageUrlInput.value = product.image;
         imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
         productForm.querySelector('button[type="submit"]').textContent = 'نوێکردنەوە';
         productFormModal.style.display = 'block';
     }
 
-    // === GORANKARI: Fonkshni srnawa asankrawatawa ===
     async function deleteProduct(productId) { 
         if (!confirm('دڵنیایت دەتەوێت ئەم کاڵایە بسڕیتەوە؟')) return;
 
@@ -604,7 +601,6 @@
             }
         };
         
-        // === GORANKARI SEREKI: Fonkshni pashekawtkrdni formaka asankrawatawa ===
         productForm.onsubmit = async (e) => { 
             e.preventDefault();
             const submitButton = e.target.querySelector('button[type="submit"]');
@@ -612,7 +608,6 @@
             submitButton.textContent = '...چاوەڕێ بە';
 
             try {
-                // Rastekho linki wenaka la inputaka wardegrin
                 const imageUrl = productImageUrlInput.value;
 
                 const productData = {
@@ -621,11 +616,16 @@
                     originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null,
                     category: document.getElementById('productCategory').value,
                     description: document.getElementById('productDescription').value,
-                    image: imageUrl, // Linkaka rastekho pashekawt dekre
+                    image: imageUrl,
+                    // === GORANKARI 2: ZYADKRDNI KATI DRUSTKRDN (TIMESTAMP) ===
+                    createdAt: Date.now() 
                 };
 
                 if (editingProductId) {
-                    await updateDoc(doc(db, "products", editingProductId), productData);
+                    // La kati edit krdnda, timestamp gorankari basar nayeet
+                    // Agar pet bashe la kati edit krdnishda bbetawa ba nwê, aw kota dabuusne
+                    const { createdAt, ...updateData } = productData;
+                    await updateDoc(doc(db, "products", editingProductId), updateData);
                     showNotification('کاڵا نوێکرایەوە', 'success');
                 } else {
                     await addDoc(productsCollection, productData);
@@ -644,7 +644,6 @@
             }
         };
 
-        // === GORANKARI: Zyadkrdni fonkshnek bo peshbinikrdni wena la link ===
         productImageUrlInput.oninput = () => {
             const url = productImageUrlInput.value;
             if (url) {
@@ -684,7 +683,10 @@
     }
 
     function init() {
-        onSnapshot(productsCollection, (snapshot) => {
+        // === GORANKARI 1: GORINI PRSYARI FIRESTORE BO REZKRIDN ===
+        const productsQuery = query(productsCollection, orderBy("createdAt", "desc"));
+
+        onSnapshot(productsQuery, (snapshot) => {
             products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderProducts();
             setupProductCardListeners();
