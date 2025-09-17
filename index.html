@@ -55,11 +55,11 @@
     .search-input { width: 100%; padding: 10px 40px 10px 12px; border: 1px solid var(--section-border); border-radius: 6px; font-size: 15px; }
     .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--dark-gray); }
     .products-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-    .product-card { background-color: white; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--section-border); transition: transform 0.2s, box-shadow 0.2s; }
+    .product-card { background-color: white; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--section-border); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
     .product-image-container { width: 100%; aspect-ratio: 1/1; position: relative; }
     .product-image { width: 100%; height: 100%; object-fit: contain; padding: 10px; }
-    .product-info { padding: 8px; }
+    .product-info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
     .product-name { font-weight: bold; font-size: 14px; }
     .product-price-container { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 4px; }
     .product-description {
@@ -73,6 +73,7 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         height: 36.4px; 
+        flex-grow: 1;
     }
     .product-price { color: var(--accent-light); font-weight: 700; font-size: 15px; }
     .original-price { color: var(--dark-gray); text-decoration: line-through; font-size: 13px; }
@@ -113,6 +114,22 @@
     .quick-contact a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: white; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.08); font-weight: bold; }
     .quick-contact .wh { background: linear-gradient(90deg,#19b56a,#25D366); }
     .quick-contact .vi { background: linear-gradient(90deg,#5b46f0,#7360F2); }
+    /* GORANKARI: Style bo dwgmay zanyari zyatr */
+    .details-btn {
+        display: block;
+        margin-top: 8px;
+        padding: 6px;
+        background-color: var(--primary-color);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 13px;
+        transition: background-color 0.2s;
+    }
+    .details-btn:hover {
+        background-color: var(--primary-light);
+    }
     </style>
 
 </head>
@@ -246,6 +263,11 @@
                     <div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div>
                 </div>
                 
+                <div class="form-group">
+                    <label for="productExternalLink">لینکی دەرەکی (ئارەزوومەندانە):</label>
+                    <input type="text" id="productExternalLink" placeholder="بۆ نموونە، لینکی ڤیدیۆ یان ماڵپەڕی سەرەکی...">
+                </div>
+
                 <button type="submit">پاشەکەوتکردن</button>
             </form>
         </div>
@@ -264,7 +286,6 @@
         updateDoc, 
         deleteDoc, 
         onSnapshot,
-        // === GORANKARI 1: ZYADKRDNI query w orderBy bo sort krdn ===
         query,
         orderBy
     } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
@@ -272,7 +293,7 @@
 
     // =========== Firebase Config ================
     const firebaseConfig = {
-      apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE", // تکایە زانیاری خۆت دابنێ
+      apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
       authDomain: "maten-store.firebaseapp.com",
       projectId: "maten-store",
       storageBucket: "maten-store.appspot.com", 
@@ -392,14 +413,22 @@
                 discountBadgeHTML = `<div class="discount-badge">-%${discountPercentage}</div>`;
             }
 
+            // GORANKARI: Zyadkrdni dwgmay zanyari zyatr agar link habw
+            const detailsButtonHTML = product.externalLink 
+                ? `<a href="${product.externalLink}" target="_blank" class="details-btn"><i class="fas fa-info-circle"></i> زانیاری زیاتر</a>`
+                : '';
+
             productCard.innerHTML = `
                 <div class="product-image-container">
                     <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
+                    ${discountBadgeHTML}
                 </div>
                 <div class="product-info">
                     <div class="product-name">${product.name}</div>
-                    <p class="product-description">${product.description || ''}</p> 
-                    ${priceHTML}
+                    <p class="product-description">${product.description || ''}</p>
+                    <div style="margin-top: auto;"> ${priceHTML}
+                        ${detailsButtonHTML}
+                    </div>
                 </div>
                 <div class="product-actions">
                     ${isAdmin ? `
@@ -460,6 +489,8 @@
         document.getElementById('productDescription').value = product.description || '';
         productImageUrlInput.value = product.image;
         imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
+        // GORANKARI: NISHANDANI LINKI DAREKI LA KATI EDIT KRDNDA
+        document.getElementById('productExternalLink').value = product.externalLink || '';
         productForm.querySelector('button[type="submit"]').textContent = 'نوێکردنەوە';
         productFormModal.style.display = 'block';
     }
@@ -617,13 +648,12 @@
                     category: document.getElementById('productCategory').value,
                     description: document.getElementById('productDescription').value,
                     image: imageUrl,
-                    // === GORANKARI 2: ZYADKRDNI KATI DRUSTKRDN (TIMESTAMP) ===
-                    createdAt: Date.now() 
+                    createdAt: Date.now(),
+                    // GORANKARI: PASEKAWTKRDNI LINKI DAREKI
+                    externalLink: document.getElementById('productExternalLink').value || null
                 };
 
                 if (editingProductId) {
-                    // La kati edit krdnda, timestamp gorankari basar nayeet
-                    // Agar pet bashe la kati edit krdnishda bbetawa ba nwê, aw kota dabuusne
                     const { createdAt, ...updateData } = productData;
                     await updateDoc(doc(db, "products", editingProductId), updateData);
                     showNotification('کاڵا نوێکرایەوە', 'success');
@@ -683,7 +713,6 @@
     }
 
     function init() {
-        // === GORANKARI 1: GORINI PRSYARI FIRESTORE BO REZKRIDN ===
         const productsQuery = query(productsCollection, orderBy("createdAt", "desc"));
 
         onSnapshot(productsQuery, (snapshot) => {
