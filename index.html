@@ -39,21 +39,45 @@
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'NRT', sans-serif; }
     body { background-color: var(--light-gray); color: var(--text-color); direction: rtl; transition: background-color 0.3s, color 0.3s; }
     .app-container { max-width: 100%; margin: 0 auto; background-color: white; min-height: 100vh; position: relative; }
-    .app-header { background-color: white; color: var(--primary-color); padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); border-bottom: 2px solid var(--accent-color); }
+    
+    /* === GORANKARI: Style bo heLi sarawa === */
+    .app-header { 
+        background-color: white; 
+        color: var(--primary-color); 
+        padding: 12px 15px; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        position: sticky; 
+        top: 0; 
+        z-index: 100; 
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+        border-bottom: 2px solid var(--accent-color);
+        gap: 15px;
+    }
     .logo { display: flex; align-items: center; gap: 10px; }
-    .logo-bottom { font-size: 22px; font-weight: bold; color: var(--primary-color); }
-    .user-actions { display: flex; align-items: center; gap: 15px; }
-    .user-actions button { color: var(--primary-color); background: none; border: none; font-size: 18px; cursor: pointer; position: relative; }
-    .main-content { padding-bottom: 70px; }
+    .logo-bottom { font-size: 22px; font-weight: bold; color: var(--primary-color); white-space: nowrap; }
+    .user-actions { display: none; /* Labrdn */ }
+    
+    /* === GORANKARI: Style bo main content === */
+    .main-content { padding-bottom: 85px; /* Zyadkrdni padding bo away benawe dwgmakani xwarawa nakawet */ }
+    
     .section { background-color: var(--section-bg); border-radius: 8px; margin: 12px; padding: 12px; border: 1px solid var(--section-border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
     .section-title { font-size: 17px; margin-bottom: 12px; color: var(--primary-color); display: flex; align-items: center; gap: 8px; font-weight: bold; }
     .categories { display: flex; overflow-x: auto; padding: 8px 0; gap: 8px; scrollbar-width: none; }
     .categories::-webkit-scrollbar { display: none; }
     .category-btn { background-color: var(--light-gray); border: none; padding: 6px 12px; border-radius: 18px; white-space: nowrap; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 4px; border: 1px solid var(--section-border); }
     .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); font-weight: bold; }
-    .search-container { margin: 12px; position: relative; }
+    
+    /* === GORANKARI: Style bo Search la naw header === */
+    .search-container { 
+        flex-grow: 1;
+        margin: 0;
+        position: relative;
+    }
     .search-input { width: 100%; padding: 10px 40px 10px 12px; border: 1px solid var(--section-border); border-radius: 6px; font-size: 15px; }
     .search-icon { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); color: var(--dark-gray); }
+
     .products-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
     .product-card { background-color: white; border-radius: 8px; overflow: hidden; position: relative; border: 1px solid var(--section-border); transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
     .product-card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); }
@@ -62,19 +86,7 @@
     .product-info { padding: 8px; flex-grow: 1; display: flex; flex-direction: column; }
     .product-name { font-weight: bold; font-size: 14px; }
     .product-price-container { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 4px; }
-    .product-description {
-        font-size: 13px;
-        color: var(--text-light);
-        margin-top: 4px;
-        line-height: 1.4;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        height: 36.4px; 
-        flex-grow: 1;
-    }
+    .product-description { font-size: 13px; color: var(--text-light); margin-top: 4px; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; height: 36.4px; flex-grow: 1; }
     .product-price { color: var(--accent-light); font-weight: 700; font-size: 15px; }
     .original-price { color: var(--dark-gray); text-decoration: line-through; font-size: 13px; }
     .discount-badge { position: absolute; top: 8px; right: 8px; background-color: var(--danger-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
@@ -85,7 +97,7 @@
     .delete-btn { background-color: var(--danger-color); }
     .add-to-cart-btn { position: absolute; bottom: 8px; right: 8px; width: 30px; height: 30px; background-color: var(--accent-color); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
     .product-card:hover .add-to-cart-btn { opacity: 1; }
-    .cart-count { position: absolute; top: -8px; right: -8px; background-color: var(--danger-light); color: white; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 11px; }
+
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 200; overflow-y: auto; }
     .modal-content { background-color: white; margin: 30px auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 450px; position: relative; }
     .close { position: absolute; top: 12px; left: 12px; font-size: 22px; cursor: pointer; }
@@ -97,7 +109,7 @@
     .notification.show { opacity: 1; transform: translateX(0); }
     .notification.success { background-color: var(--accent-color); }
     .notification.error { background-color: var(--danger-color); }
-    .add-product-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px; background-color: var(--accent-color); border-radius: 50%; align-items: center; justify-content: center; color: white; font-size: 20px; cursor: pointer; z-index: 80; }
+    .add-product-btn { display: none; position: fixed; bottom: 80px; right: 20px; width: 50px; height: 50px; background-color: var(--accent-color); border-radius: 50%; align-items: center; justify-content: center; color: white; font-size: 20px; cursor: pointer; z-index: 80; }
     .cart-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--section-border); }
     .cart-item-image { width: 60px; height: 60px; object-fit: contain; border-radius: 6px; margin-left: 10px; }
     .cart-item-details { flex: 1; }
@@ -110,25 +122,64 @@
     .whatsapp-btn, .viber-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; border: none; color: white; }
     .whatsapp-btn { background-color: #25D366; }
     .viber-btn { background-color: #7360F2; }
-    .quick-contact { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 500; }
-    .quick-contact a { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 8px; color: white; text-decoration: none; box-shadow: 0 6px 18px rgba(0,0,0,0.08); font-weight: bold; }
-    .quick-contact .wh { background: linear-gradient(90deg,#19b56a,#25D366); }
-    .quick-contact .vi { background: linear-gradient(90deg,#5b46f0,#7360F2); }
-    /* GORANKARI: Style bo dwgmay zanyari zyatr */
-    .details-btn {
-        display: block;
-        margin-top: 8px;
-        padding: 6px;
-        background-color: var(--primary-color);
-        color: white;
-        text-align: center;
+    .quick-contact { display: none; /* Labrdn */ }
+    .details-btn { display: block; margin-top: 8px; padding: 6px; background-color: var(--primary-color); color: white; text-align: center; text-decoration: none; border-radius: 4px; font-size: 13px; transition: background-color 0.2s; }
+    .details-btn:hover { background-color: var(--primary-light); }
+    
+    /* === GORANKARI: Style bo heLi asoyi xwarawa (Bottom Nav) === */
+    .bottom-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: stretch; /* Make items fill the height */
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 65px;
+        background-color: #ffffff;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+        border-top: 1px solid var(--medium-gray);
+    }
+    .bottom-nav-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        background: none;
+        border: none;
+        color: var(--text-color);
         text-decoration: none;
-        border-radius: 4px;
-        font-size: 13px;
+        font-size: 12px;
+        cursor: pointer;
+        flex: 1;
+        position: relative;
+        padding: 5px 0;
         transition: background-color 0.2s;
     }
-    .details-btn:hover {
-        background-color: var(--primary-light);
+     .bottom-nav-item:hover {
+        background-color: var(--light-gray);
+    }
+    .bottom-nav-item i {
+        font-size: 20px;
+        color: var(--primary-color);
+    }
+     .bottom-nav-item .cart-count {
+        position: absolute;
+        top: 5px;
+        left: calc(50% + 5px); /* Position relative to center */
+        background-color: var(--danger-light);
+        color: white;
+        border-radius: 50%;
+        width: 18px;
+        height: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        border: 1px solid white;
     }
     </style>
 
@@ -140,157 +191,116 @@
                 <i class="fas fa-store" style="color: var(--accent-color); font-size: 24px;"></i>
                 <span class="logo-bottom">فرۆشگای MATEN</span>
             </div>
-            <div class="user-actions">
-                <button id="cartBtn">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="cart-count" id="cartCount">0</span>
-                </button>
-                <button id="adminLoginBtn" title="چوونەژوورەوەی بەڕێوەبەر"><i class="fas fa-user-shield"></i></button>
-                <button id="logoutBtn" style="display: none;" title="چوونەدەرەوە"><i class="fas fa-sign-out-alt"></i></button>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="گەڕان بە ناوی کاڵا...">
+                <i class="fas fa-search search-icon"></i>
             </div>
-        </header><div class="quick-contact">
-        <a id="quickWhatsApp" class="wh" href="#" title="واتسئاپ"><i class="fab fa-whatsapp"></i> واتسئاپ</a>
-        <a id="quickViber" class="vi" href="#" title="فایبەر"><i class="fab fa-viber"></i> فایبەر</a>
-    </div>
+        </header>
 
-    <div id="loginModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 style="text-align: center; margin-bottom: 18px;">چوونەژوورەوەی بەڕێوەبەر</h2>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="email">ئیمەیڵ:</label>
-                    <input type="email" id="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">وشەی نهێنی:</label>
-                    <input type="password" id="password" required>
-                </div>
-                <button type="submit">چوونەژوورەوە</button>
-            </form>
-        </div>
-    </div>
-    
-    <div id="cartModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 style="text-align: center; margin-bottom: 18px;"><i class="fas fa-shopping-cart"></i> سەبەتەی کڕین</h2>
-            <div id="cartItemsContainer"></div>
-            <div id="emptyCartMessage" class="cart-empty" style="display:none;">
-                <i class="fas fa-shopping-basket"></i>
-                <p>سەبەتەکەت بەتاڵە</p>
-            </div>
-            
-            <div id="cartTotal" class="cart-total" style="display:none;">
-                <span>کۆی گشتی:</span> <span id="totalAmount">0</span> د.ع.
-            </div>
-            
-            <div id="cartActions" style="display:none; margin-top: 15px;">
-                 <button id="whatsappBtn" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> ناردن لە ڕێگەی واتسئاپ</button>
-                 <button id="viberBtn" class="viber-btn"><i class="fab fa-viber"></i> ناردن لە ڕێگەی فایبەر</button>
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 18px;">چوونەژوورەوەی بەڕێوەبەر</h2>
+                <form id="loginForm">
+                    <div class="form-group"><label for="email">ئیمەیڵ:</label><input type="email" id="email" required></div>
+                    <div class="form-group"><label for="password">وشەی نهێنی:</label><input type="password" id="password" required></div>
+                    <button type="submit">چوونەژوورەوە</button>
+                </form>
             </div>
         </div>
-    </div>
+        <div id="cartModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 18px;"><i class="fas fa-shopping-cart"></i> سەبەتەی کڕین</h2>
+                <div id="cartItemsContainer"></div>
+                <div id="emptyCartMessage" class="cart-empty" style="display:none;"><i class="fas fa-shopping-basket"></i><p>سەبەتەکەت بەتاڵە</p></div>
+                <div id="cartTotal" class="cart-total" style="display:none;"><span>کۆی گشتی:</span> <span id="totalAmount">0</span> د.ع.</div>
+                <div id="cartActions" style="display:none; margin-top: 15px;">
+                     <button id="whatsappBtn" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> ناردن لە ڕێگەی واتسئاپ</button>
+                     <button id="viberBtn" class="viber-btn"><i class="fab fa-viber"></i> ناردن لە ڕێگەی فایبەر</button>
+                </div>
+            </div>
+        </div>
 
-    <main class="main-content">
-         <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="گەڕان بە ناوی کاڵا...">
-            <i class="fas fa-search search-icon"></i>
-        </div>
-        <div class="section">
-            <h3 class="section-title"><i class="fas fa-list"></i> جۆرەکان</h3>
-            <div class="categories" style="padding-bottom: 10px;">
-                <button class="category-btn active" data-category="all"><i class="fas fa-th"></i> هەموو</button> 
-                <button class="category-btn" data-category="electronics"><i class="fas fa-plug"></i> ئەلیکترۆنیات</button> 
-                <button class="category-btn" data-category="kitchen"><i class="fas fa-utensils"></i> چێشتخانە</button> 
-                <button class="category-btn" data-category="sport"><i class="fas fa-dumbbell"></i> وەرزشی</button> 
-                <button class="category-btn" data-category="building"><i class="fas fa-hard-hat"></i> بیناسازی</button> 
-                <button class="category-btn" data-category="medical"><i class="fas fa-stethoscope"></i> پزیشکی</button> 
-                <button class="category-btn" data-category="car"><i class="fas fa-car"></i> ئۆتۆمبێل</button> 
-                <button class="category-btn" data-category="bags"><i class="fas fa-shopping-bag"></i> جانتا</button> 
-                <button class="category-btn" data-category="general"><i class="fas fa-box"></i> هەمەجۆر</button> 
-                <button class="category-btn" data-category="farm"><i class="fas fa-seedling"></i> چاودێری</button> 
-                <button class="category-btn" data-category="games"><i class="fas fa-gamepad"></i> یاری</button> 
-                <button class="category-btn" data-category="agriculture"><i class="fas fa-tractor"></i> کشتوکاڵی</button>
-            </div>
+        <main class="main-content">
+            <div class="section">
+                <h3 class="section-title"><i class="fas fa-list"></i> جۆرەکان</h3>
+                <div class="categories" style="padding-bottom: 10px;">
+                    <button class="category-btn active" data-category="all"><i class="fas fa-th"></i> هەموو</button> 
+                    <button class="category-btn" data-category="electronics"><i class="fas fa-plug"></i> ئەلیکترۆنیات</button> 
+                    <button class="category-btn" data-category="kitchen"><i class="fas fa-utensils"></i> چێشتخانە</button> 
+                    <button class="category-btn" data-category="sport"><i class="fas fa-dumbbell"></i> وەرزشی</button> 
+                    <button class="category-btn" data-category="building"><i class="fas fa-hard-hat"></i> بیناسازی</button> 
+                    <button class="category-btn" data-category="medical"><i class="fas fa-stethoscope"></i> پزیشکی</button> 
+                    <button class="category-btn" data-category="car"><i class="fas fa-car"></i> ئۆتۆمبێل</button> 
+                    <button class="category-btn" data-category="bags"><i class="fas fa-shopping-bag"></i> جانتا</button> 
+                    <button class="category-btn" data-category="general"><i class="fas fa-box"></i> هەمەجۆر</button> 
+                    <button class="category-btn" data-category="farm"><i class="fas fa-seedling"></i> چاودێری</button> 
+                    <button class="category-btn" data-category="games"><i class="fas fa-gamepad"></i> یاری</button> 
+                    <button class="category-btn" data-category="agriculture"><i class="fas fa-tractor"></i> کشتوکاڵی</button>
+                </div>
             </div>
             <div class="section">
                 <h3 class="section-title"><i class="fas fa-box-open"></i> کاڵاکان</h3>
                 <div class="products-container" id="productsContainer"></div>
             </div>
-        </main><div class="add-product-btn" id="addProductBtn">
-        <i class="fas fa-plus"></i>
-    </div>
+        </main>
+        
+        <div class="add-product-btn" id="addProductBtn"><i class="fas fa-plus"></i></div>
 
-    <div id="productFormModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id="formTitle" style="text-align: center; margin-bottom: 18px;">زیادکردنی کاڵای نوێ</h2>
-            <form id="productForm">
-                <div class="form-group"><label for="productName">ناوی کاڵا:</label><input type="text" id="productName" required></div>
-                
-                <div class="form-group">
-                    <label for="productPrice">نرخی فرۆشتن (داشکاو) (د.ع.):</label>
-                    <input type="number" id="productPrice" required min="0" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="productOriginalPrice">نرخی ڕەسەن (پێش داشکاندن) (د.ع.):</label>
-                    <input type="number" id="productOriginalPrice" min="0" step="1" placeholder="ئەگەر داشکانی نییە، بەتاڵ بێت">
-                </div>
-                
-                <div class="form-group">
-                    <label for="productCategory">جۆر:</label>
-                    <select id="productCategory" required>
-                        <option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>
-                        <option value="electronics">ئەلیکترۆنیات</option>
-                        <option value="kitchen">چێشتخانە</option>
-                        <option value="sport">وەرزشی</option>
-                        <option value="building">بیناسازی</option>
-                        <option value="medical">پزیشکی</option>
-                        <option value="car">ئۆتۆمبێل</option>
-                        <option value="bags">جانتا</option>
-                        <option value="general">هەمەجۆر</option>
-                        <option value="farm">چاودێری</option>
-                        <option value="games">یاری</option>
-                        <option value="agriculture">کشتوکاڵی</option>
-                    </select>
-                </div>
-                <div class="form-group"><label for="productDescription">وەسف:</label><textarea id="productDescription" rows="3" required></textarea></div>
-                
-                <div class="form-group">
-                    <label for="productImageUrl">لینکی وێنەی کاڵا:</label>
-                    <input type="text" id="productImageUrl" placeholder="لێرە لینکی وێنەکە دابنێ..." required>
-                    <div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="productExternalLink">لینکی دەرەکی (ئارەزوومەندانە):</label>
-                    <input type="text" id="productExternalLink" placeholder="بۆ نموونە، لینکی ڤیدیۆ یان ماڵپەڕی سەرەکی...">
-                </div>
-
-                <button type="submit">پاشەکەوتکردن</button>
-            </form>
+        <div id="productFormModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="formTitle" style="text-align: center; margin-bottom: 18px;">زیادکردنی کاڵای نوێ</h2>
+                <form id="productForm">
+                    <div class="form-group"><label for="productName">ناوی کاڵا:</label><input type="text" id="productName" required></div>
+                    <div class="form-group"><label for="productPrice">نرخی فرۆشتن (داشکاو) (د.ع.):</label><input type="number" id="productPrice" required min="0" step="1"></div>
+                    <div class="form-group"><label for="productOriginalPrice">نرخی ڕەسەن (پێش داشکاندن) (د.ع.):</label><input type="number" id="productOriginalPrice" min="0" step="1" placeholder="ئەگەر داشکانی نییە، بەتاڵ بێت"></div>
+                    <div class="form-group"><label for="productCategory">جۆر:</label>
+                        <select id="productCategory" required>
+                            <option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>
+                            <option value="electronics">ئەلیکترۆنیات</option><option value="kitchen">چێشتخانە</option><option value="sport">وەرزشی</option><option value="building">بیناسازی</option><option value="medical">پزیشکی</option><option value="car">ئۆتۆمبێل</option><option value="bags">جانتا</option><option value="general">هەمەجۆر</option><option value="farm">چاودێری</option><option value="games">یاری</option><option value="agriculture">کشتوکاڵی</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label for="productDescription">وەسف:</label><textarea id="productDescription" rows="3" required></textarea></div>
+                    <div class="form-group"><label for="productImageUrl">لینکی وێنەی کاڵا:</label><input type="text" id="productImageUrl" placeholder="لێرە لینکی وێنەکە دابنێ..." required><div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div></div>
+                    <div class="form-group"><label for="productExternalLink">لینکی دەرەکی (ئارەزوومەندانە):</label><input type="text" id="productExternalLink" placeholder="بۆ نموونە، لینکی ڤیدیۆ یان ماڵپەڕی سەرەکی..."></div>
+                    <button type="submit">پاشەکەوتکردن</button>
+                </form>
+            </div>
         </div>
-    </div>
-</div>
-<script type="module"> 
+        
+        <div class="bottom-nav">
+             <button class="bottom-nav-item" id="bottomNavWhatsApp">
+                <i class="fab fa-whatsapp" style="color:#25D366;"></i>
+                <span>واتسئاپ</span>
+            </button>
+            <button class="bottom-nav-item" id="bottomNavViber">
+                <i class="fab fa-viber" style="color:#7360F2;"></i>
+                <span>فایبەر</span>
+            </button>
+            <button id="cartBtn" class="bottom-nav-item">
+                <span class="cart-count" id="cartCount">0</span>
+                <i class="fas fa-shopping-cart"></i>
+                <span>سەبەتە</span>
+            </button>
+            <button id="adminLoginBtn" class="bottom-nav-item">
+                <i class="fas fa-user-shield"></i>
+                <span>بەڕێوەبەر</span>
+            </button>
+            <button id="logoutBtn" class="bottom-nav-item" style="display: none;">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>چوونەدەرەوە</span>
+            </button>
+        </div>
+
+    </div> <script type="module"> 
     // =========== Import-krdni SDK-kani Firebase ===========
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-    import { 
-        getFirestore, 
-        collection, 
-        addDoc, 
-        doc, 
-        updateDoc, 
-        deleteDoc, 
-        onSnapshot,
-        query,
-        orderBy
-    } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
     
-
     // =========== Firebase Config ================
     const firebaseConfig = {
       apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
@@ -318,18 +328,18 @@
     let currentSearch = '';
     let products = [];
 
-    // DOM Elements
+    // === GORANKARI: DOM Elements ===
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginModal = document.getElementById('loginModal');
-    const cartBtn = document.getElementById('cartBtn');
+    const cartBtn = document.getElementById('cartBtn'); // ID wek xoy mawatawa
     const cartModal = document.getElementById('cartModal');
     const addProductBtn = document.getElementById('addProductBtn');
     const productFormModal = document.getElementById('productFormModal');
     const productsContainer = document.getElementById('productsContainer');
     const searchInput = document.getElementById('searchInput');
     const categoryButtons = document.querySelectorAll('.category-btn');
-    const cartCount = document.getElementById('cartCount');
+    const cartCount = document.getElementById('cartCount'); // ID wek xoy mawatawa
     const cartItemsContainer = document.getElementById('cartItemsContainer');
     const emptyCartMessage = document.getElementById('emptyCartMessage');
     const cartTotal = document.getElementById('cartTotal');
@@ -337,8 +347,8 @@
     const cartActions = document.getElementById('cartActions');
     const whatsappBtn = document.getElementById('whatsappBtn');
     const viberBtn = document.getElementById('viberBtn');
-    const quickWhatsApp = document.getElementById('quickWhatsApp');
-    const quickViber = document.getElementById('quickViber');
+    const bottomNavWhatsApp = document.getElementById('bottomNavWhatsApp'); // Dwgmay nwe
+    const bottomNavViber = document.getElementById('bottomNavViber'); // Dwgmay nwe
     const closeButtons = document.querySelectorAll('.close');
     const loginForm = document.getElementById('loginForm');
     const productForm = document.getElementById('productForm');
@@ -364,7 +374,10 @@
 
     function updateCartCount() {
         const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-        cartCount.textContent = totalItems;
+        // === GORANKARI: Update har dw cart count ===
+        document.querySelectorAll('.cart-count').forEach(el => {
+            el.textContent = totalItems;
+        });
     }
 
     function showNotification(message, type = 'success') {
@@ -382,63 +395,27 @@
 
     function renderProducts() {
         productsContainer.innerHTML = '';
-        
         const filteredProducts = products.filter(product => 
             (currentCategory === 'all' || product.category === currentCategory) &&
             product.name.toLowerCase().includes(currentSearch.toLowerCase())
         );
-        
         if (filteredProducts.length === 0) {
             productsContainer.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--dark-gray);">هیچ کاڵایەک نەدۆزرایەوە</div>';
             return;
         }
-        
         filteredProducts.forEach(product => {
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
-            
             let priceHTML = `<div class="product-price">${product.price.toLocaleString()} د.ع.</div>`;
             let discountBadgeHTML = '';
-
             const hasDiscount = product.originalPrice && product.originalPrice > product.price;
-
             if (hasDiscount) {
-                priceHTML = `
-                    <div class="product-price-container">
-                        <span class="product-price">${product.price.toLocaleString()} د.ع.</span>
-                        <del class="original-price">${product.originalPrice.toLocaleString()} د.ع.</del>
-                    </div>
-                `;
+                priceHTML = `<div class="product-price-container"><span class="product-price">${product.price.toLocaleString()} د.ع.</span><del class="original-price">${product.originalPrice.toLocaleString()} د.ع.</del></div>`;
                 const discountPercentage = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
                 discountBadgeHTML = `<div class="discount-badge">-%${discountPercentage}</div>`;
             }
-
-            // GORANKARI: Zyadkrdni dwgmay zanyari zyatr agar link habw
-            const detailsButtonHTML = product.externalLink 
-                ? `<a href="${product.externalLink}" target="_blank" class="details-btn"><i class="fas fa-info-circle"></i> زانیاری زیاتر</a>`
-                : '';
-
-            productCard.innerHTML = `
-                <div class="product-image-container">
-                    <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
-                    ${discountBadgeHTML}
-                </div>
-                <div class="product-info">
-                    <div class="product-name">${product.name}</div>
-                    <p class="product-description">${product.description || ''}</p>
-                    <div style="margin-top: auto;"> ${priceHTML}
-                        ${detailsButtonHTML}
-                    </div>
-                </div>
-                <div class="product-actions">
-                    ${isAdmin ? `
-                        <button class="edit-btn" data-id="${product.id}"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn" data-id="${product.id}"><i class="fas fa-trash"></i></button>
-                    ` : ''}
-                </div>
-                <button class="add-to-cart-btn" data-id="${product.id}"><i class="fas fa-cart-plus"></i></button>
-            `;
-            
+            const detailsButtonHTML = product.externalLink ? `<a href="${product.externalLink}" target="_blank" class="details-btn"><i class="fas fa-info-circle"></i> زانیاری زیاتر</a>` : '';
+            productCard.innerHTML = `<div class="product-image-container"><img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">${discountBadgeHTML}</div><div class="product-info"><div class="product-name">${product.name}</div><p class="product-description">${product.description || ''}</p><div style="margin-top: auto;"> ${priceHTML}${detailsButtonHTML}</div></div><div class="product-actions">${isAdmin ? `<button class="edit-btn" data-id="${product.id}"><i class="fas fa-edit"></i></button><button class="delete-btn" data-id="${product.id}"><i class="fas fa-trash"></i></button>` : ''}</div><button class="add-to-cart-btn" data-id="${product.id}"><i class="fas fa-cart-plus"></i></button>`;
             productsContainer.appendChild(productCard);
         });
     }
@@ -447,7 +424,6 @@
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.onclick = (e) => addToCart(e.currentTarget.getAttribute('data-id'));
         });
-        
         if (isAdmin) {
             document.querySelectorAll('.edit-btn').forEach(btn => {
                 btn.onclick = (e) => editProduct(e.currentTarget.getAttribute('data-id'));
@@ -461,14 +437,12 @@
     function addToCart(productId) {
         const product = products.find(p => p.id === productId);
         if (!product) return;
-        
         const existingItem = cart.find(item => item.id === productId);
         if (existingItem) {
             existingItem.quantity++;
         } else {
             cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, quantity: 1 });
         }
-        
         saveCart();
         showNotification(`${product.name} زیادکرا بۆ سەبەتە`);
     }
@@ -479,7 +453,6 @@
             showNotification("هەڵە: کاڵاکە نەدۆزرایەوە!", 'error');
             return;
         }
-        
         editingProductId = productId;
         formTitle.textContent = 'دەستکاری کردنی کاڵا';
         document.getElementById('productName').value = product.name;
@@ -489,7 +462,6 @@
         document.getElementById('productDescription').value = product.description || '';
         productImageUrlInput.value = product.image;
         imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
-        // GORANKARI: NISHANDANI LINKI DAREKI LA KATI EDIT KRDNDA
         document.getElementById('productExternalLink').value = product.externalLink || '';
         productForm.querySelector('button[type="submit"]').textContent = 'نوێکردنەوە';
         productFormModal.style.display = 'block';
@@ -497,7 +469,6 @@
 
     async function deleteProduct(productId) { 
         if (!confirm('دڵنیایت دەتەوێت ئەم کاڵایە بسڕیتەوە؟')) return;
-
         try {
             await deleteDoc(doc(db, "products", productId));
             showNotification('کاڵا سڕدرایەوە', 'success');
@@ -524,15 +495,7 @@
             total += itemTotal;
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
-            cartItem.innerHTML = `
-                <img src="${item.image}" alt="${item.name}" class="cart-item-image">
-                <div class="cart-item-details">
-                    <div class="cart-item-title">${item.name}</div>
-                    <div>نرخ: ${item.price.toLocaleString()} د.ع. | ژمارە: ${item.quantity}</div>
-                    <div>کۆی: ${itemTotal.toLocaleString()} د.ع.</div>
-                </div>
-                <button class="cart-item-remove" data-id="${item.id}"><i class="fas fa-times"></i></button>
-            `;
+            cartItem.innerHTML = `<img src="${item.image}" alt="${item.name}" class="cart-item-image"><div class="cart-item-details"><div class="cart-item-title">${item.name}</div><div>نرخ: ${item.price.toLocaleString()} د.ع. | ژمارە: ${item.quantity}</div><div>کۆی: ${itemTotal.toLocaleString()} د.ع.</div></div><button class="cart-item-remove" data-id="${item.id}"><i class="fas fa-times"></i></button>`;
             cartItemsContainer.appendChild(cartItem);
         });
         totalAmount.textContent = total.toLocaleString();
@@ -571,14 +534,15 @@
         window.location.href = viberUrl;
     }
     
+    // === GORANKARI: UpdateAdminUI bo dwgmakani xwarawa ===
     function updateAdminUI(isAdmin) {
         if (isAdmin) {
-            logoutBtn.style.display = 'block';
+            logoutBtn.style.display = 'flex'; // Gorra bo flex
             adminLoginBtn.style.display = 'none';
             addProductBtn.style.display = 'flex';
         } else {
             logoutBtn.style.display = 'none';
-            adminLoginBtn.style.display = 'block';
+            adminLoginBtn.style.display = 'flex'; // Gorra bo flex
             addProductBtn.style.display = 'none';
         }
         renderProducts();
@@ -637,22 +601,8 @@
             const submitButton = e.target.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = '...چاوەڕێ بە';
-
             try {
-                const imageUrl = productImageUrlInput.value;
-
-                const productData = {
-                    name: document.getElementById('productName').value,
-                    price: parseInt(document.getElementById('productPrice').value),
-                    originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null,
-                    category: document.getElementById('productCategory').value,
-                    description: document.getElementById('productDescription').value,
-                    image: imageUrl,
-                    createdAt: Date.now(),
-                    // GORANKARI: PASEKAWTKRDNI LINKI DAREKI
-                    externalLink: document.getElementById('productExternalLink').value || null
-                };
-
+                const productData = { name: document.getElementById('productName').value, price: parseInt(document.getElementById('productPrice').value), originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null, category: document.getElementById('productCategory').value, description: document.getElementById('productDescription').value, image: productImageUrlInput.value, createdAt: Date.now(), externalLink: document.getElementById('productExternalLink').value || null };
                 if (editingProductId) {
                     const { createdAt, ...updateData } = productData;
                     await updateDoc(doc(db, "products", editingProductId), updateData);
@@ -661,7 +611,6 @@
                     await addDoc(productsCollection, productData);
                     showNotification('کاڵا زیادکرا', 'success');
                 }
-                
                 closeAllModals();
                 productForm.reset();
             } catch (error) {
@@ -676,11 +625,7 @@
 
         productImageUrlInput.oninput = () => {
             const url = productImageUrlInput.value;
-            if (url) {
-                imagePreview.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 150px;" onerror="this.parentElement.innerHTML='پێشبینی وێنە: لینکەکە هەڵەیە';">`;
-            } else {
-                imagePreview.innerHTML = 'پێشبینی وێنە';
-            }
+            if (url) { imagePreview.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 150px;" onerror="this.parentElement.innerHTML='پێشبینی وێنە: لینکەکە هەڵەیە';">`; } else { imagePreview.innerHTML = 'پێشبینی وێنە'; }
         };
         
         searchInput.oninput = () => {
@@ -700,13 +645,14 @@
         });
         
         whatsappBtn.onclick = sendOrderViaWhatsApp;
-        quickWhatsApp.onclick = (e) => {
+        viberBtn.onclick = sendOrderViaViber;
+        
+        // === GORANKARI: onclick bo dwgmakani xwarawa ===
+        bottomNavWhatsApp.onclick = (e) => {
             e.preventDefault();
             window.open(WHATSAPP_QR, '_blank');
         };
-        
-        viberBtn.onclick = sendOrderViaViber;
-        quickViber.onclick = (e) => {
+        bottomNavViber.onclick = (e) => {
             e.preventDefault();
             window.location.href = `viber://add?number=${VIBER_NUMBER}`;
         };
@@ -714,13 +660,11 @@
 
     function init() {
         const productsQuery = query(productsCollection, orderBy("createdAt", "desc"));
-
         onSnapshot(productsQuery, (snapshot) => {
             products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderProducts();
             setupProductCardListeners();
         });
-        
         onAuthStateChanged(auth, (user) => {
             if (user || sessionStorage.getItem('isAdmin') === 'true') {
                 isAdmin = true;
@@ -729,7 +673,6 @@
             }
             updateAdminUI(isAdmin);
         });
-
         updateCartCount();
         setupEventListeners();
     }
