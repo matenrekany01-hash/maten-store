@@ -7,7 +7,7 @@
     <meta http-equiv="Content-Language" content="ku">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* ستایلەکان وەک خۆیانن */
+        /* ستایلەکان وەک خۆیانن و گۆڕانکارییان تێدا نەکراوە */
         @font-face {
             font-family: 'NRT';
             src: url('https://www.nrttv.com/css/fonts/NRT-Reg.woff2') format('woff2'),
@@ -62,8 +62,6 @@
     .product-info { padding: 8px; }
     .product-name { font-weight: bold; font-size: 14px; }
     .product-price-container { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; margin-top: 4px; }
-    
-    /* === ستایلی وەسف لێرەدایە === */
     .product-description {
         font-size: 13px;
         color: var(--text-light);
@@ -76,7 +74,6 @@
         -webkit-box-orient: vertical;
         height: 36.4px; 
     }
-    
     .product-price { color: var(--accent-light); font-weight: 700; font-size: 15px; }
     .original-price { color: var(--dark-gray); text-decoration: line-through; font-size: 13px; }
     .discount-badge { position: absolute; top: 8px; right: 8px; background-color: var(--danger-color); color: white; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-weight: bold; }
@@ -145,8 +142,8 @@
             <h2 style="text-align: center; margin-bottom: 18px;">چوونەژوورەوەی بەڕێوەبەر</h2>
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="username">ناوی بەکارهێنەر:</label>
-                    <input type="text" id="username" required>
+                    <label for="email">ئیمەیڵ:</label>
+                    <input type="email" id="email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">وشەی نهێنی:</label>
@@ -244,10 +241,10 @@
     </div>
 </div>
 <script type="module"> 
-
     // =========== Import-krdni SDK-kani Firebase ===========
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
     import { 
         getFirestore, 
         collection, 
@@ -257,16 +254,16 @@
         deleteDoc, 
         onSnapshot 
     } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-    // TÊBÎNÎ: Bo wênekan, pêwistt ba Firebase Storage dabêt
-    // import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+    // === GORANKARI: Firebase Storage zyadkra bo wênekan ===
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
     // =================================================================
 
     // =========== Firebase Config ================
     const firebaseConfig = {
-      apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
+      apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE", // تکایە زانیاری خۆت دابنێ
       authDomain: "maten-store.firebaseapp.com",
       projectId: "maten-store",
-      storageBucket: "maten-store.firebasestorage.app",
+      storageBucket: "maten-store.appspot.com", // گۆڕانکاری کرا بۆ ئەوەی .appspot ی هەبێت
       messagingSenderId: "137714858202",
       appId: "1:137714858202:web:a3db3b3591742c3356cde3",
       measurementId: "G-TM6SG77H5G"
@@ -275,17 +272,11 @@
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
-
-    // Chalakkrdni Firestore
+    const auth = getAuth(app);
     const db = getFirestore(app);
+    const storage = getStorage(app); // Storage چالاک کرا
     const productsCollection = collection(db, "products");
     // =================================================================
-
-
-    // زانیاری بەڕێوەبەر (Hêshta na parêzrawa!)
-    const ADMIN_USER = { username: "maten", password: "maten411" };
-    
-    let products = []; // Arrayaka batal dabet, Firestore prî dakatewa
     
     // Sebatey krîn (Cart) har la localStorage damênêtewa
     const CART_KEY = "maten_store_cart";
@@ -295,6 +286,7 @@
     let editingProductId = null;
     let currentCategory = 'all';
     let currentSearch = '';
+    let products = [];
 
     // DOM Elements
     const adminLoginBtn = document.getElementById('adminLoginBtn');
@@ -324,11 +316,16 @@
     const productImage = document.getElementById('productImage');
     const imagePreview = document.getElementById('imagePreview');
 
-    // Kanfigey WatsApp w Viber (Wek xoy)
     const WHATSAPP_QR = 'https://wa.me/qr/GNAX4RXMYZEBM1';
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
-
+    
+    // === GORANKARI: Fonkshnek bo daxstni hamw modalakan ===
+    function closeAllModals() {
+        loginModal.style.display = 'none';
+        cartModal.style.display = 'none';
+        productFormModal.style.display = 'none';
+    }
 
     function saveCart() {
         localStorage.setItem(CART_KEY, JSON.stringify(cart));
@@ -346,26 +343,20 @@
         notification.textContent = message;
         document.body.appendChild(notification);
         
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 10);
-        
+        setTimeout(() => notification.classList.add('show'), 10);
         setTimeout(() => {
             notification.classList.remove('show');
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 300);
+            setTimeout(() => document.body.removeChild(notification), 300);
         }, 3000);
     }
 
     function renderProducts() {
         productsContainer.innerHTML = '';
         
-        const filteredProducts = products.filter(product => {
-            const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
-            const matchesSearch = product.name.toLowerCase().includes(currentSearch.toLowerCase());
-            return matchesCategory && matchesSearch;
-        });
+        const filteredProducts = products.filter(product => 
+            (currentCategory === 'all' || product.category === currentCategory) &&
+            product.name.toLowerCase().includes(currentSearch.toLowerCase())
+        );
         
         if (filteredProducts.length === 0) {
             productsContainer.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--dark-gray);">هیچ کاڵایەک نەدۆزرایەوە</div>';
@@ -376,8 +367,6 @@
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
             
-            // === GORANKARI: Dolar gora bo Dinari Eraqi ===
-            // .toFixed(2) labra w .toLocaleString() zyadkra bo commay hazaran
             let priceHTML = `<div class="product-price">${product.price.toLocaleString()} د.ع.</div>`;
             let discountBadgeHTML = '';
 
@@ -394,10 +383,9 @@
                 discountBadgeHTML = `<div class="discount-badge">-%${discountPercentage}</div>`;
             }
 
-            // === GORANKARI: Wasf (description) zyadkra ===
             productCard.innerHTML = `
                 <div class="product-image-container">
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
                     ${discountBadgeHTML}
                 </div>
                 <div class="product-info">
@@ -416,27 +404,20 @@
             
             productsContainer.appendChild(productCard);
         });
-        
+    }
+
+    // === GORANKARI: Event listeners la fonkshnek jya krawnatawa bo paqzhi ===
+    function setupProductCardListeners() {
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const productId = e.currentTarget.getAttribute('data-id'); 
-                addToCart(productId);
-            });
+            btn.onclick = (e) => addToCart(e.currentTarget.getAttribute('data-id'));
         });
         
         if (isAdmin) {
             document.querySelectorAll('.edit-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const productId = e.currentTarget.getAttribute('data-id');
-                    editProduct(productId);
-                });
+                btn.onclick = (e) => editProduct(e.currentTarget.getAttribute('data-id'));
             });
-            
             document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const productId = e.currentTarget.getAttribute('data-id');
-                    deleteProduct(productId);
-                });
+                btn.onclick = (e) => deleteProduct(e.currentTarget.getAttribute('data-id'));
             });
         }
     }
@@ -446,62 +427,49 @@
         if (!product) return;
         
         const existingItem = cart.find(item => item.id === productId);
-        
         if (existingItem) {
-            existingItem.quantity += 1;
+            existingItem.quantity++;
         } else {
-            cart.push({
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                image: product.image,
-                quantity: 1
-            });
+            cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, quantity: 1 });
         }
         
         saveCart();
         showNotification(`${product.name} زیادکرا بۆ سەبەتە`);
     }
 
-    // === GORANKARI: Fankshni editProductی پێشوو (بۆ دۆزینەوەی کێشە) لێرەدایە ===
     function editProduct(productId) {
-        console.log("Testing edit function for ID:", productId); // Bo test 1
-        
         const product = products.find(p => p.id === productId);
-        
         if (!product) {
-            console.error("Product not found! ID:", productId); // Bo test 2
-            alert("هەڵەیەکی چاوەڕواننەکراو ڕوویدا: کاڵاکە نەدۆزرایەوە! \n\nتکایە پەیجەکە ڕیفرێش بکەوە و دووبارە تاقی بکەوە.");
+            showNotification("هەڵە: کاڵاکە نەدۆزرایەوە!", 'error');
             return;
         }
         
-        console.log("Product found:", product.name); // Bo test 3
-
         editingProductId = productId;
+        formTitle.textContent = 'دەستکاری کردنی کاڵا';
         document.getElementById('productName').value = product.name;
-        document.getElementById('productPrice').value = product.price; // نرخی دیناری وەک خۆی دادەنێت
+        document.getElementById('productPrice').value = product.price;
         document.getElementById('productOriginalPrice').value = product.originalPrice || '';
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productDescription').value = product.description || ''; 
-        
         imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
-        
-        formTitle.textContent = 'دەستکاری کردنی کاڵا';
-        
-        console.log("Opening modal..."); // Bo test 4
+        productForm.querySelector('button[type="submit"]').textContent = 'نوێکردنەوە';
         productFormModal.style.display = 'block';
     }
 
     async function deleteProduct(productId) { 
-        if (confirm('دڵنیایت دەتەوێت ئەم کاڵایە بسڕیتەوە؟')) {
-            try {
-                const productRef = doc(db, "products", productId);
-                await deleteDoc(productRef);
-                showNotification('کاڵا سڕدرایەوە', 'success');
-            } catch (error) {
-                showNotification('هەڵە لە سڕینەوە', 'error');
-                console.error("Error removing document: ", error);
+        if (!confirm('دڵنیایت دەتەوێت ئەم کاڵایە بسڕیتەوە؟')) return;
+
+        try {
+            const productToDelete = products.find(p => p.id === productId);
+            if (productToDelete && productToDelete.imagePath) {
+                const imageRef = ref(storage, productToDelete.imagePath);
+                await deleteObject(imageRef);
             }
+            await deleteDoc(doc(db, "products", productId));
+            showNotification('کاڵا سڕدرایەوە', 'success');
+        } catch (error) {
+            showNotification('هەڵە لە سڕینەوەی کاڵا', 'error');
+            console.error("Error removing document: ", error);
         }
     }
 
@@ -520,15 +488,12 @@
         cartActions.style.display = 'block';
         
         let total = 0;
-        
         cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
             total += itemTotal;
             
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
-            
-            // === GORANKARI: Dolar gora bo Dinari Eraqi ===
             cartItem.innerHTML = `
                 <img src="${item.image}" alt="${item.name}" class="cart-item-image">
                 <div class="cart-item-details">
@@ -538,18 +503,13 @@
                 </div>
                 <button class="cart-item-remove" data-id="${item.id}"><i class="fas fa-times"></i></button>
             `;
-            
             cartItemsContainer.appendChild(cartItem);
         });
         
-        // === GORANKARI: Dolar gora bo Dinari Eraqi ===
         totalAmount.textContent = total.toLocaleString();
         
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const productId = e.currentTarget.getAttribute('data-id');
-                removeFromCart(productId);
-            });
+            btn.onclick = (e) => removeFromCart(e.currentTarget.getAttribute('data-id'));
         });
     }
 
@@ -559,213 +519,201 @@
         renderCart();
     }
 
-    function sendOrderViaWhatsApp() {
-        if (cart.length === 0) return;
-
-        let message = "سڵاو! من پێویستم بە ئەم کاڵایانەی خوارەوەە:\n\n";
+    function generateOrderMessage() {
+        if (cart.length === 0) return "";
+        let message = "سڵاو! من پێویستم بە ئەم کاڵایانەی خوارەوەیە:\n\n";
         cart.forEach(item => {
-            // === GORANKARI: Dolar gora bo Dinari Eraqi ===
             message += `- ${item.name} | نرخ: ${item.price.toLocaleString()} د.ع. | ژمارە: ${item.quantity}\n`;
         });
-        // === GORANKARI: Dolar gora bo Dinari Eraqi ===
         message += `\nکۆی گشتی: ${totalAmount.textContent} د.ع.`;
+        return encodeURIComponent(message);
+    }
 
-        const encodedMessage = encodeURIComponent(message);
-        const waNumberUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-        const waQrUrl = WHATSAPP_QR;
-
-        const win = window.open(waNumberUrl, '_blank');
-        if (!win) {
-            window.location.href = waQrUrl;
-        }
+    function sendOrderViaWhatsApp() {
+        const encodedMessage = generateOrderMessage();
+        if (!encodedMessage) return;
+        const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+        window.open(waUrl, '_blank');
     }
 
     function sendOrderViaViber() {
-        if (cart.length === 0) return;
-
-        let message = "سڵاو! من پێویستم بە ئەم کاڵایانەی خوارەوەە:\n\n";
-        cart.forEach(item => {
-            // === GORANKARI: Dolar gora bo Dinari Eraqi ===
-            message += `- ${item.name} | نرخ: ${item.price.toLocaleString()} د.ع. | ژمارە: ${item.quantity}\n`;
-        });
-        // === GORANKARI: Dolar gora bo Dinari Eraqi ===
-        message += `\nکۆی گشتی: ${totalAmount.textContent} د.ع.`;
-
-        const encodedMessage = encodeURIComponent(message);
-        const viberApp = `viber://chat?number=%2B${VIBER_NUMBER}`;
-        const viberWeb = `https://viber.me/${VIBER_NUMBER}?text=${encodedMessage}`;
-
-        window.location.href = viberApp;
-        setTimeout(() => {
-            window.open(viberWeb, '_blank');
-        }, 700);
+        const encodedMessage = generateOrderMessage();
+        if (!encodedMessage) return;
+        const viberUrl = `viber://chat?number=%2B${VIBER_NUMBER}&text=${encodedMessage}`;
+        window.location.href = viberUrl;
     }
-
-    function setupEventListeners() {
-        adminLoginBtn.addEventListener('click', () => {
-            loginModal.style.display = 'block';
-        });
-        
-        logoutBtn.addEventListener('click', () => {
-            isAdmin = false;
+    
+    // === GORANKARI: Fonkshnek bo nwêkrdnaway UI basraw ba admin ===
+    function updateAdminUI(isAdmin) {
+        if (isAdmin) {
+            logoutBtn.style.display = 'block';
+            adminLoginBtn.style.display = 'none';
+            addProductBtn.style.display = 'flex';
+        } else {
             logoutBtn.style.display = 'none';
             adminLoginBtn.style.display = 'block';
             addProductBtn.style.display = 'none';
-            renderProducts();
-            showNotification('بە سەرکەوتوویی چوویتەدەرەوە', 'success');
-        });
+        }
+        renderProducts();
+        setupProductCardListeners();
+    }
+
+    function setupEventListeners() {
+        adminLoginBtn.onclick = () => loginModal.style.display = 'block';
         
-        cartBtn.addEventListener('click', () => {
+        logoutBtn.onclick = async () => {
+            await signOut(auth);
+            sessionStorage.removeItem('isAdmin');
+            isAdmin = false;
+            updateAdminUI(false);
+            showNotification('بە سەرکەوتوویی چوویتەدەرەوە', 'success');
+        };
+        
+        cartBtn.onclick = () => {
             renderCart();
             cartModal.style.display = 'block';
-        });
+        };
         
-        addProductBtn.addEventListener('click', () => {
+        addProductBtn.onclick = () => {
             editingProductId = null;
             productForm.reset();
             imagePreview.innerHTML = 'پێشبینی وێنە';
             formTitle.textContent = 'زیادکردنی کاڵای نوێ';
+            productForm.querySelector('button[type="submit"]').textContent = 'پاشەکەوتکردن';
             productFormModal.style.display = 'block';
-        });
+        };
         
-        closeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                loginModal.style.display = 'none';
-                cartModal.style.display = 'none';
-                productFormModal.style.display = 'none';
-            });
-        });
+        closeButtons.forEach(btn => btn.onclick = closeAllModals);
+        window.onclick = (e) => {
+            if (e.target.classList.contains('modal')) closeAllModals();
+        };
         
-        window.addEventListener('click', (e) => {
-            if (e.target === loginModal) loginModal.style.display = 'none';
-            if (e.target === cartModal) cartModal.style.display = 'none';
-            if (e.target === productFormModal) productFormModal.style.display = 'none';
-        });
-        
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.onsubmit = async (e) => {
             e.preventDefault();
-            
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            
-            if (username === ADMIN_USER.username && password === ADMIN_USER.password) {
-                isAdmin = true;
-                loginModal.style.display = 'none';
-                logoutBtn.style.display = 'block';
-                adminLoginBtn.style.display = 'none';
-                addProductBtn.style.display = 'flex';
-                renderProducts();
-                showNotification('بە سەرکەوتوویی چوویتەژوورەوە', 'success');
-            } else {
-                showNotification('ناوی بەکارهێنەر یان وشەی نهێنی هەڵەە', 'error');
-            }
-        });
-        
-        productForm.addEventListener('submit', async (e) => { 
-            e.preventDefault();
-            
-            // === GORANKARI: parseFloat gora bo parseInt bo نرخی Dinari ===
-            const productData = {
-                name: document.getElementById('productName').value,
-                price: parseInt(document.getElementById('productPrice').value),
-                originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null,
-                category: document.getElementById('productCategory').value,
-                description: document.getElementById('productDescription').value,
-                image: null 
-            };
-            
-            const imageFile = productImage.files[0];
-
-            if (imageFile) {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    productData.image = e.target.result;
-                    await saveDataToFirestore(productData);
-                };
-                reader.readAsDataURL(imageFile);
-
-            } else if (editingProductId) {
-                productData.image = products.find(p => p.id === editingProductId).image;
-                await saveDataToFirestore(productData);
-
-            } else {
-                productData.image = 'https://placehold.co/300x300/e2e8f0/2d3748?text=Product';
-                await saveDataToFirestore(productData);
-            }
-        });
-
-        async function saveDataToFirestore(data) {
             try {
-                if (editingProductId) {
-                    const productRef = doc(db, "products", editingProductId);
-                    await updateDoc(productRef, data);
-                    showNotification('کاڵا سەرکەوتووانە نوێکرایەوە', 'success');
+                await signInWithEmailAndPassword(auth, email, password);
+                sessionStorage.setItem('isAdmin', 'true'); // Dway refresh har damênêtewa
+                isAdmin = true;
+                updateAdminUI(true);
+                closeAllModals();
+                showNotification('بە سەرکەوتوویی چوویتەژوورەوە', 'success');
+            } catch (error) {
+                showNotification('ئیمەیڵ یان وشەی نهێنی هەڵەیە', 'error');
+                console.error("Login error:", error);
+            }
+        };
+        
+        productForm.onsubmit = async (e) => { 
+            e.preventDefault();
+            const submitButton = e.target.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.textContent = '...چاوەڕێ بە';
+
+            const imageFile = productImage.files[0];
+            let imageUrl = null;
+            let imagePath = null;
+            
+            try {
+                if (imageFile) {
+                    // Wêneka bar dakat bo Storage
+                    const filePath = `products/${Date.now()}-${imageFile.name}`;
+                    const storageRef = ref(storage, filePath);
+                    const snapshot = await uploadBytes(storageRef, imageFile);
+                    imageUrl = await getDownloadURL(snapshot.ref);
+                    imagePath = filePath;
+                } else if (editingProductId) {
+                    const existingProduct = products.find(p => p.id === editingProductId);
+                    imageUrl = existingProduct.image;
+                    imagePath = existingProduct.imagePath || null;
                 } else {
-                    await addDoc(productsCollection, data);
-                    showNotification('کاڵا سەرکەوتووانە زیادکرا', 'success');
+                    imageUrl = 'https://placehold.co/300x300/e2e8f0/2d3748?text=Product';
+                }
+
+                const productData = {
+                    name: document.getElementById('productName').value,
+                    price: parseInt(document.getElementById('productPrice').value),
+                    originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null,
+                    category: document.getElementById('productCategory').value,
+                    description: document.getElementById('productDescription').value,
+                    image: imageUrl,
+                    imagePath: imagePath // Linki wêneka bo srinaway dwayi
+                };
+
+                if (editingProductId) {
+                    await updateDoc(doc(db, "products", editingProductId), productData);
+                    showNotification('کاڵا نوێکرایەوە', 'success');
+                } else {
+                    await addDoc(productsCollection, productData);
+                    showNotification('کاڵا زیادکرا', 'success');
                 }
                 
-                productFormModal.style.display = 'none';
-                editingProductId = null;
+                closeAllModals();
                 productForm.reset();
-                imagePreview.innerHTML = 'پێشبینی وێنە';
-
             } catch (error) {
-                console.error("هەڵە لە پاشەکەوتکردن: ", error);
-                showNotification('هەڵەیەک ڕوویدا', 'error');
+                console.error("Error saving data: ", error);
+                showNotification('هەڵەیەک لە پاشەکەوتکردن ڕوویدا', 'error');
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = editingProductId ? 'نوێکردنەوە' : 'پاشەکەوتکردن';
+                editingProductId = null;
             }
-        }
+        };
 
-        productImage.addEventListener('change', function() {
+        productImage.onchange = function() {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 150px;">`;
-                };
+                reader.onload = e => imagePreview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 150px;">`;
                 reader.readAsDataURL(this.files[0]);
             }
-        });
+        };
         
-        searchInput.addEventListener('input', () => {
+        searchInput.oninput = () => {
             currentSearch = searchInput.value;
             renderProducts();
-        });
+            setupProductCardListeners();
+        };
         
         categoryButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                categoryButtons.forEach(b => b.classList.remove('active'));
+            btn.onclick = () => {
+                document.querySelector('.category-btn.active').classList.remove('active');
                 btn.classList.add('active');
                 currentCategory = btn.getAttribute('data-category');
                 renderProducts();
-            });
+                setupProductCardListeners();
+            };
         });
         
-        whatsappBtn.addEventListener('click', sendOrderViaWhatsApp);
-        quickWhatsApp.addEventListener('click', (e) => {
+        whatsappBtn.onclick = sendOrderViaWhatsApp;
+        quickWhatsApp.onclick = (e) => {
             e.preventDefault();
             window.open(WHATSAPP_QR, '_blank');
-        });
+        };
         
-        viberBtn.addEventListener('click', sendOrderViaViber);
-        quickViber.addEventListener('click', (e) => {
+        viberBtn.onclick = sendOrderViaViber;
+        quickViber.onclick = (e) => {
             e.preventDefault();
             window.location.href = `viber://add?number=${VIBER_NUMBER}`;
-            setTimeout(() => {
-                window.open(`https://viber.me/${VIBER_NUMBER}`, '_blank');
-            }, 700);
-        });
+        };
     }
 
     function init() {
         onSnapshot(productsCollection, (snapshot) => {
-            products = snapshot.docs.map(doc => ({ 
-                id: doc.id, 
-                ...doc.data() 
-            }));
-            
+            products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             renderProducts();
+            setupProductCardListeners();
         });
         
+        onAuthStateChanged(auth, (user) => {
+            if (user || sessionStorage.getItem('isAdmin') === 'true') {
+                isAdmin = true;
+            } else {
+                isAdmin = false;
+            }
+            updateAdminUI(isAdmin);
+        });
+
         updateCartCount();
         setupEventListeners();
     }
