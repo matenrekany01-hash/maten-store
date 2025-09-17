@@ -183,10 +183,19 @@
         <div class="section">
             <h3 class="section-title"><i class="fas fa-list"></i> جۆرەکان</h3>
             <div class="categories" style="padding-bottom: 10px;">
-
-<button class="category-btn active" data-category="all"><i class="fas fa-th"></i> هەمی</button> <button class="category-btn" data-category="electronics"><i class="fas fa-plug"></i> الکترونیات و اکسسوارات</button> <button class="category-btn" data-category="kitchen"><i class="fas fa-utensils"></i> ئامێری چێشتخانە</button> <button class="category-btn" data-category="sport"><i class="fas fa-dumbbell"></i> ئامێری وەرزشی</button> <button class="category-btn" data-category="building"><i class="fas fa-hard-hat"></i> ئامێری بیناسازی</button> <button class="category-btn" data-category="medical"><i class="fas fa-stethoscope"></i> ئامێری پزیشکی</button> <button class="category-btn" data-category="car"><i class="fas fa-car"></i> پێداویستی ئۆتۆمبێل</button> <button class="category-btn" data-category="bags"><i class="fas fa-shopping-bag"></i> جانتاکان</button> <button class="category-btn" data-category="general"><i class="fas fa-box"></i> هەمەجۆر</button> <button class="category-btn" data-category="farm"><i class="fas fa-seedling"></i> بەرهەمەکانی چاودێری</button> <button class="category-btn" data-category="games"><i class="fas fa-gamepad"></i> یارییەکان</button> <button class="category-btn" data-category="agriculture"><i class="fas fa-tractor"></i> ئامرازی کشتوکاڵی</button>
-
-</div>
+                <button class="category-btn active" data-category="all"><i class="fas fa-th"></i> هەموو</button> 
+                <button class="category-btn" data-category="electronics"><i class="fas fa-plug"></i> ئەلیکترۆنیات</button> 
+                <button class="category-btn" data-category="kitchen"><i class="fas fa-utensils"></i> چێشتخانە</button> 
+                <button class="category-btn" data-category="sport"><i class="fas fa-dumbbell"></i> وەرزشی</button> 
+                <button class="category-btn" data-category="building"><i class="fas fa-hard-hat"></i> بیناسازی</button> 
+                <button class="category-btn" data-category="medical"><i class="fas fa-stethoscope"></i> پزیشکی</button> 
+                <button class="category-btn" data-category="car"><i class="fas fa-car"></i> ئۆتۆمبێل</button> 
+                <button class="category-btn" data-category="bags"><i class="fas fa-shopping-bag"></i> جانتا</button> 
+                <button class="category-btn" data-category="general"><i class="fas fa-box"></i> هەمەجۆر</button> 
+                <button class="category-btn" data-category="farm"><i class="fas fa-seedling"></i> چاودێری</button> 
+                <button class="category-btn" data-category="games"><i class="fas fa-gamepad"></i> یاری</button> 
+                <button class="category-btn" data-category="agriculture"><i class="fas fa-tractor"></i> کشتوکاڵی</button>
+            </div>
             </div>
             <div class="section">
                 <h3 class="section-title"><i class="fas fa-box-open"></i> کاڵاکان</h3>
@@ -196,7 +205,7 @@
         <i class="fas fa-plus"></i>
     </div>
 
-     <div id="productFormModal" class="modal">
+    <div id="productFormModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2 id="formTitle" style="text-align: center; margin-bottom: 18px;">زیادکردنی کاڵای نوێ</h2>
@@ -216,23 +225,24 @@
                     <label for="productCategory">جۆر:</label>
                     <select id="productCategory" required>
                         <option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>
-                        <option value="electronics">الکترونیات و اکسسوارات</option>
-                        <option value="kitchen">ئامێری چێشتخانە</option>
-                        <option value="sport">ئامێری وەرزشی</option>
-                        <option value="building">ئامێری بیناسازی</option>
-                        <option value="medical">ئامێری پزیشکی</option>
-                        <option value="car">پێداویستی ئۆتۆمبێل</option>
-                        <option value="bags">جانتاکان</option>
+                        <option value="electronics">ئەلیکترۆنیات</option>
+                        <option value="kitchen">چێشتخانە</option>
+                        <option value="sport">وەرزشی</option>
+                        <option value="building">بیناسازی</option>
+                        <option value="medical">پزیشکی</option>
+                        <option value="car">ئۆتۆمبێل</option>
+                        <option value="bags">جانتا</option>
                         <option value="general">هەمەجۆر</option>
-                        <option value="farm">بەرهەمەکانی چاودێری</option>
-                        <option value="games">یارییەکان</option>
-                        <option value="agriculture">ئامرازی کشتوکاڵی</option>
+                        <option value="farm">چاودێری</option>
+                        <option value="games">یاری</option>
+                        <option value="agriculture">کشتوکاڵی</option>
                     </select>
                 </div>
                 <div class="form-group"><label for="productDescription">وەسف:</label><textarea id="productDescription" rows="3" required></textarea></div>
+                
                 <div class="form-group">
-                    <label for="productImage">وێنەی کاڵا:</label>
-                    <input type="file" id="productImage" accept="image/*">
+                    <label for="productImageUrl">لینکی وێنەی کاڵا:</label>
+                    <input type="text" id="productImageUrl" placeholder="لێرە لینکی وێنەکە دابنێ..." required>
                     <div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div>
                 </div>
                 <button type="submit">پاشەکەوتکردن</button>
@@ -254,8 +264,8 @@
         deleteDoc, 
         onSnapshot 
     } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-    // === GORANKARI: Firebase Storage zyadkra bo wênekan ===
-    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-storage.js";
+    
+    // === GORANKARI: Firebase Storage SRDRAYAWA, CHI TIR PEWIST NIYE ===
     // =================================================================
 
     // =========== Firebase Config ================
@@ -263,7 +273,7 @@
       apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE", // تکایە زانیاری خۆت دابنێ
       authDomain: "maten-store.firebaseapp.com",
       projectId: "maten-store",
-      storageBucket: "maten-store.appspot.com", // گۆڕانکاری کرا بۆ ئەوەی .appspot ی هەبێت
+      storageBucket: "maten-store.appspot.com", // ئەمە ئاساییە ئەگەر بمێنێتەوە
       messagingSenderId: "137714858202",
       appId: "1:137714858202:web:a3db3b3591742c3356cde3",
       measurementId: "G-TM6SG77H5G"
@@ -274,11 +284,10 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
-    const storage = getStorage(app); // Storage چالاک کرا
+    // === GORANKARI: Storage srdrawa ===
     const productsCollection = collection(db, "products");
     // =================================================================
     
-    // Sebatey krîn (Cart) har la localStorage damênêtewa
     const CART_KEY = "maten_store_cart";
     let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
 
@@ -313,14 +322,15 @@
     const loginForm = document.getElementById('loginForm');
     const productForm = document.getElementById('productForm');
     const formTitle = document.getElementById('formTitle');
-    const productImage = document.getElementById('productImage');
     const imagePreview = document.getElementById('imagePreview');
+    // === GORANKARI: Danani ID bo inputi linki wenaka ===
+    const productImageUrlInput = document.getElementById('productImageUrl');
+
 
     const WHATSAPP_QR = 'https://wa.me/qr/GNAX4RXMYZEBM1';
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
     
-    // === GORANKARI: Fonkshnek bo daxstni hamw modalakan ===
     function closeAllModals() {
         loginModal.style.display = 'none';
         cartModal.style.display = 'none';
@@ -385,8 +395,7 @@
 
             productCard.innerHTML = `
                 <div class="product-image-container">
-                    <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy">
-                    ${discountBadgeHTML}
+                    <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
                 </div>
                 <div class="product-info">
                     <div class="product-name">${product.name}</div>
@@ -406,7 +415,6 @@
         });
     }
 
-    // === GORANKARI: Event listeners la fonkshnek jya krawnatawa bo paqzhi ===
     function setupProductCardListeners() {
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.onclick = (e) => addToCart(e.currentTarget.getAttribute('data-id'));
@@ -450,21 +458,19 @@
         document.getElementById('productPrice').value = product.price;
         document.getElementById('productOriginalPrice').value = product.originalPrice || '';
         document.getElementById('productCategory').value = product.category;
-        document.getElementById('productDescription').value = product.description || ''; 
+        document.getElementById('productDescription').value = product.description || '';
+        // === GORANKARI: Prikrdni inputi linki wenaka ===
+        productImageUrlInput.value = product.image;
         imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
         productForm.querySelector('button[type="submit"]').textContent = 'نوێکردنەوە';
         productFormModal.style.display = 'block';
     }
 
+    // === GORANKARI: Fonkshni srnawa asankrawatawa ===
     async function deleteProduct(productId) { 
         if (!confirm('دڵنیایت دەتەوێت ئەم کاڵایە بسڕیتەوە؟')) return;
 
         try {
-            const productToDelete = products.find(p => p.id === productId);
-            if (productToDelete && productToDelete.imagePath) {
-                const imageRef = ref(storage, productToDelete.imagePath);
-                await deleteObject(imageRef);
-            }
             await deleteDoc(doc(db, "products", productId));
             showNotification('کاڵا سڕدرایەوە', 'success');
         } catch (error) {
@@ -475,23 +481,19 @@
 
     function renderCart() {
         cartItemsContainer.innerHTML = '';
-        
         if (cart.length === 0) {
             emptyCartMessage.style.display = 'block';
             cartTotal.style.display = 'none';
             cartActions.style.display = 'none';
             return;
         }
-        
         emptyCartMessage.style.display = 'none';
         cartTotal.style.display = 'block';
         cartActions.style.display = 'block';
-        
         let total = 0;
         cart.forEach(item => {
             const itemTotal = item.price * item.quantity;
             total += itemTotal;
-            
             const cartItem = document.createElement('div');
             cartItem.className = 'cart-item';
             cartItem.innerHTML = `
@@ -505,9 +507,7 @@
             `;
             cartItemsContainer.appendChild(cartItem);
         });
-        
         totalAmount.textContent = total.toLocaleString();
-        
         document.querySelectorAll('.cart-item-remove').forEach(btn => {
             btn.onclick = (e) => removeFromCart(e.currentTarget.getAttribute('data-id'));
         });
@@ -543,7 +543,6 @@
         window.location.href = viberUrl;
     }
     
-    // === GORANKARI: Fonkshnek bo nwêkrdnaway UI basraw ba admin ===
     function updateAdminUI(isAdmin) {
         if (isAdmin) {
             logoutBtn.style.display = 'block';
@@ -594,7 +593,7 @@
             const password = document.getElementById('password').value;
             try {
                 await signInWithEmailAndPassword(auth, email, password);
-                sessionStorage.setItem('isAdmin', 'true'); // Dway refresh har damênêtewa
+                sessionStorage.setItem('isAdmin', 'true');
                 isAdmin = true;
                 updateAdminUI(true);
                 closeAllModals();
@@ -605,31 +604,16 @@
             }
         };
         
+        // === GORANKARI SEREKI: Fonkshni pashekawtkrdni formaka asankrawatawa ===
         productForm.onsubmit = async (e) => { 
             e.preventDefault();
             const submitButton = e.target.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = '...چاوەڕێ بە';
 
-            const imageFile = productImage.files[0];
-            let imageUrl = null;
-            let imagePath = null;
-            
             try {
-                if (imageFile) {
-                    // Wêneka bar dakat bo Storage
-                    const filePath = `products/${Date.now()}-${imageFile.name}`;
-                    const storageRef = ref(storage, filePath);
-                    const snapshot = await uploadBytes(storageRef, imageFile);
-                    imageUrl = await getDownloadURL(snapshot.ref);
-                    imagePath = filePath;
-                } else if (editingProductId) {
-                    const existingProduct = products.find(p => p.id === editingProductId);
-                    imageUrl = existingProduct.image;
-                    imagePath = existingProduct.imagePath || null;
-                } else {
-                    imageUrl = 'https://placehold.co/300x300/e2e8f0/2d3748?text=Product';
-                }
+                // Rastekho linki wenaka la inputaka wardegrin
+                const imageUrl = productImageUrlInput.value;
 
                 const productData = {
                     name: document.getElementById('productName').value,
@@ -637,8 +621,7 @@
                     originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null,
                     category: document.getElementById('productCategory').value,
                     description: document.getElementById('productDescription').value,
-                    image: imageUrl,
-                    imagePath: imagePath // Linki wêneka bo srinaway dwayi
+                    image: imageUrl, // Linkaka rastekho pashekawt dekre
                 };
 
                 if (editingProductId) {
@@ -661,11 +644,13 @@
             }
         };
 
-        productImage.onchange = function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => imagePreview.innerHTML = `<img src="${e.target.result}" style="max-width: 100%; max-height: 150px;">`;
-                reader.readAsDataURL(this.files[0]);
+        // === GORANKARI: Zyadkrdni fonkshnek bo peshbinikrdni wena la link ===
+        productImageUrlInput.oninput = () => {
+            const url = productImageUrlInput.value;
+            if (url) {
+                imagePreview.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 150px;" onerror="this.parentElement.innerHTML='پێشبینی وێنە: لینکەکە هەڵەیە';">`;
+            } else {
+                imagePreview.innerHTML = 'پێشبینی وێنە';
             }
         };
         
