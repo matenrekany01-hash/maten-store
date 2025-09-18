@@ -40,7 +40,6 @@
     body { background-color: var(--light-gray); color: var(--text-color); direction: rtl; transition: background-color 0.3s, color 0.3s; }
     .app-container { max-width: 100%; margin: 0 auto; background-color: white; min-height: 100vh; position: relative; }
     
-    /* === GORANKARI: Style bo heLi sarawa === */
     .app-header { 
         background-color: white; 
         color: var(--primary-color); 
@@ -57,10 +56,9 @@
     }
     .logo { display: flex; align-items: center; gap: 10px; }
     .logo-bottom { font-size: 22px; font-weight: bold; color: var(--primary-color); white-space: nowrap; }
-    .user-actions { display: none; /* Labrdn */ }
+    .user-actions { display: none; }
     
-    /* === GORANKARI: Style bo main content === */
-    .main-content { padding-bottom: 85px; /* Zyadkrdni padding bo away benawe dwgmakani xwarawa nakawet */ }
+    .main-content { padding-bottom: 85px; }
     
     .section { background-color: var(--section-bg); border-radius: 8px; margin: 12px; padding: 12px; border: 1px solid var(--section-border); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
     .section-title { font-size: 17px; margin-bottom: 12px; color: var(--primary-color); display: flex; align-items: center; gap: 8px; font-weight: bold; }
@@ -69,7 +67,6 @@
     .category-btn { background-color: var(--light-gray); border: none; padding: 6px 12px; border-radius: 18px; white-space: nowrap; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 4px; border: 1px solid var(--section-border); }
     .category-btn.active { background-color: var(--primary-color); color: white; border-color: var(--primary-color); font-weight: bold; }
     
-    /* === GORANKARI: Style bo Search la naw header === */
     .search-container { 
         flex-grow: 1;
         margin: 0;
@@ -122,15 +119,14 @@
     .whatsapp-btn, .viber-btn { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; width: 100%; border: none; color: white; }
     .whatsapp-btn { background-color: #25D366; }
     .viber-btn { background-color: #7360F2; }
-    .quick-contact { display: none; /* Labrdn */ }
+    .quick-contact { display: none; }
     .details-btn { display: block; margin-top: 8px; padding: 6px; background-color: var(--primary-color); color: white; text-align: center; text-decoration: none; border-radius: 4px; font-size: 13px; transition: background-color 0.2s; }
     .details-btn:hover { background-color: var(--primary-light); }
     
-    /* === GORANKARI: Style bo heLi asoyi xwarawa (Bottom Nav) === */
     .bottom-nav {
         display: flex;
         justify-content: space-around;
-        align-items: stretch; /* Make items fill the height */
+        align-items: stretch;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -169,7 +165,7 @@
      .bottom-nav-item .cart-count {
         position: absolute;
         top: 5px;
-        left: calc(50% + 5px); /* Position relative to center */
+        left: calc(50% + 5px);
         background-color: var(--danger-light);
         color: white;
         border-radius: 50%;
@@ -181,7 +177,69 @@
         font-size: 11px;
         border: 1px solid white;
     }
-    </style>
+    
+    .contact-dropdown { position: relative; }
+    .contact-menu {
+        display: none;
+        position: absolute;
+        bottom: 65px;
+        background: #fff;
+        border: 1px solid var(--medium-gray);
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        flex-direction: column;
+        min-width: 120px;
+        z-index: 2000;
+    }
+    .contact-menu button {
+        background: none;
+        border: none;
+        padding: 10px;
+        text-align: right;
+        width: 100%;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .contact-menu button:hover { background-color: var(--light-gray); }
+    .contact-dropdown.open .contact-menu { display: flex; }
+
+    /* GORANKARI: CSSی نوێ بۆ لیستی جۆرەکان لەناو مۆداڵ */
+    #modalCategoriesContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .modal-category-btn {
+        background-color: var(--light-gray);
+        border: 1px solid var(--section-border);
+        padding: 12px;
+        border-radius: 6px;
+        width: 100%;
+        text-align: right;
+        cursor: pointer;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.2s, color 0.2s;
+    }
+    .modal-category-btn:hover {
+        background-color: var(--medium-gray);
+    }
+    .modal-category-btn.active {
+        background-color: var(--primary-color);
+        color: white;
+        font-weight: bold;
+        border-color: var(--primary-color);
+    }
+    .modal-category-btn.active i {
+        color: white !important;
+    }
+
+</style>
 
 </head>
 <body>
@@ -221,27 +279,20 @@
                 </div>
             </div>
         </div>
+        
+        <div id="categoriesModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 style="text-align: center; margin-bottom: 18px;"><i class="fas fa-list"></i> هەڵبژاردنی جۆر</h2>
+                <div id="modalCategoriesContainer">
+                    </div>
+            </div>
+        </div>
+
 
         <main class="main-content">
             <div class="section">
-                <h3 class="section-title"><i class="fas fa-list"></i> جۆرەکان</h3>
-                <div class="categories" style="padding-bottom: 10px;">
-                    <button class="category-btn active" data-category="all"><i class="fas fa-th"></i> هەموو</button> 
-                    <button class="category-btn" data-category="electronics"><i class="fas fa-plug"></i> ئەلیکترۆنیات</button> 
-                    <button class="category-btn" data-category="kitchen"><i class="fas fa-utensils"></i> چێشتخانە</button> 
-                    <button class="category-btn" data-category="sport"><i class="fas fa-dumbbell"></i> وەرزشی</button> 
-                    <button class="category-btn" data-category="building"><i class="fas fa-hard-hat"></i> بیناسازی</button> 
-                    <button class="category-btn" data-category="medical"><i class="fas fa-stethoscope"></i> پزیشکی</button> 
-                    <button class="category-btn" data-category="car"><i class="fas fa-car"></i> ئۆتۆمبێل</button> 
-                    <button class="category-btn" data-category="bags"><i class="fas fa-shopping-bag"></i> جانتا</button> 
-                    <button class="category-btn" data-category="general"><i class="fas fa-box"></i> هەمەجۆر</button> 
-                    <button class="category-btn" data-category="farm"><i class="fas fa-seedling"></i> چاودێری</button> 
-                    <button class="category-btn" data-category="games"><i class="fas fa-gamepad"></i> یاری</button> 
-                    <button class="category-btn" data-category="agriculture"><i class="fas fa-tractor"></i> کشتوکاڵی</button>
-                </div>
-            </div>
-            <div class="section">
-                <h3 class="section-title"><i class="fas fa-box-open"></i> کاڵاکان</h3>
+                <h3 class="section-title" id="productsSectionTitle"><i class="fas fa-box-open"></i> هەموو کاڵاکان</h3>
                 <div class="products-container" id="productsContainer"></div>
             </div>
         </main>
@@ -270,31 +321,43 @@
             </div>
         </div>
         
-        <div class="bottom-nav">
-             <button class="bottom-nav-item" id="bottomNavWhatsApp">
-                <i class="fab fa-whatsapp" style="color:#25D366;"></i>
-                <span>واتسئاپ</span>
+        
+<div class="bottom-nav">
+    <button id="categoriesBtn" class="bottom-nav-item">
+        <i class="fas fa-tags"></i>
+        <span>جۆرەکان</span>
+    </button>
+    
+    <button id="cartBtn" class="bottom-nav-item">
+        <span class="cart-count" id="cartCount">0</span>
+        <i class="fas fa-shopping-cart"></i>
+        <span>سەبەتە</span>
+    </button>
+    
+    <div class="bottom-nav-item contact-dropdown">
+        <i class="fas fa-comments" style="color: var(--accent-color);"></i>
+        <span>پەیوەندی</span>
+        <div class="contact-menu">
+            <button id="bottomNavWhatsApp">
+                <i class="fab fa-whatsapp" style="color:#25D366;"></i> واتسئاپ
             </button>
-            <button class="bottom-nav-item" id="bottomNavViber">
-                <i class="fab fa-viber" style="color:#7360F2;"></i>
-                <span>فایبەر</span>
-            </button>
-            <button id="cartBtn" class="bottom-nav-item">
-                <span class="cart-count" id="cartCount">0</span>
-                <i class="fas fa-shopping-cart"></i>
-                <span>سەبەتە</span>
-            </button>
-            <button id="adminLoginBtn" class="bottom-nav-item">
-                <i class="fas fa-user-shield"></i>
-                <span>بەڕێوەبەر</span>
-            </button>
-            <button id="logoutBtn" class="bottom-nav-item" style="display: none;">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>چوونەدەرەوە</span>
+            <button id="bottomNavViber">
+                <i class="fab fa-viber" style="color:#7360F2;"></i> فایبەر
             </button>
         </div>
+    </div>
 
-    </div> <script type="module"> 
+    <button id="adminLoginBtn" class="bottom-nav-item">
+        <i class="fas fa-user-shield"></i>
+        <span>بەڕێوەبەر</span>
+    </button>
+    <button id="logoutBtn" class="bottom-nav-item" style="display: none;">
+        <i class="fas fa-sign-out-alt"></i>
+        <span>چوونەدەرەوە</span>
+    </button>
+</div>
+
+</div> <script type="module"> 
     // =========== Import-krdni SDK-kani Firebase ===========
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
@@ -328,18 +391,17 @@
     let currentSearch = '';
     let products = [];
 
-    // === GORANKARI: DOM Elements ===
+    // GORANKARI: DOM Elements نوێ زیادکران
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginModal = document.getElementById('loginModal');
-    const cartBtn = document.getElementById('cartBtn'); // ID wek xoy mawatawa
+    const cartBtn = document.getElementById('cartBtn');
     const cartModal = document.getElementById('cartModal');
     const addProductBtn = document.getElementById('addProductBtn');
     const productFormModal = document.getElementById('productFormModal');
     const productsContainer = document.getElementById('productsContainer');
     const searchInput = document.getElementById('searchInput');
-    const categoryButtons = document.querySelectorAll('.category-btn');
-    const cartCount = document.getElementById('cartCount'); // ID wek xoy mawatawa
+    const cartCount = document.getElementById('cartCount');
     const cartItemsContainer = document.getElementById('cartItemsContainer');
     const emptyCartMessage = document.getElementById('emptyCartMessage');
     const cartTotal = document.getElementById('cartTotal');
@@ -347,8 +409,6 @@
     const cartActions = document.getElementById('cartActions');
     const whatsappBtn = document.getElementById('whatsappBtn');
     const viberBtn = document.getElementById('viberBtn');
-    const bottomNavWhatsApp = document.getElementById('bottomNavWhatsApp'); // Dwgmay nwe
-    const bottomNavViber = document.getElementById('bottomNavViber'); // Dwgmay nwe
     const closeButtons = document.querySelectorAll('.close');
     const loginForm = document.getElementById('loginForm');
     const productForm = document.getElementById('productForm');
@@ -356,15 +416,36 @@
     const imagePreview = document.getElementById('imagePreview');
     const productImageUrlInput = document.getElementById('productImageUrl');
 
+    // GORANKARI: DOM elements نوێ بۆ سیستمی جۆرەکان
+    const categoriesBtn = document.getElementById('categoriesBtn');
+    const categoriesModal = document.getElementById('categoriesModal');
+    const modalCategoriesContainer = document.getElementById('modalCategoriesContainer');
+    const productsSectionTitle = document.getElementById('productsSectionTitle');
 
-    const WHATSAPP_QR = 'https://wa.me/qr/GNAX4RXMYZEBM1';
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
     
+    // GORANKARI: لیستی جۆرەکان لێرە پێناسە کرا بۆ بەکارهێنانی لە چەند شوێنێک
+    const categories = [
+        { id: 'all', name: 'هەموو', icon: 'fas fa-th' },
+        { id: 'electronics', name: 'ئەلیکترۆنیات', icon: 'fas fa-plug' },
+        { id: 'kitchen', name: 'چێشتخانە', icon: 'fas fa-utensils' },
+        { id: 'sport', name: 'وەرزشی', icon: 'fas fa-dumbbell' },
+        { id: 'building', name: 'بیناسازی', icon: 'fas fa-hard-hat' },
+        { id: 'medical', name: 'پزیشکی', icon: 'fas fa-stethoscope' },
+        { id: 'car', name: 'ئۆتۆمبێل', icon: 'fas fa-car' },
+        { id: 'bags', name: 'جانتا', icon: 'fas fa-shopping-bag' },
+        { id: 'general', name: 'هەمەجۆر', icon: 'fas fa-box' },
+        { id: 'farm', name: 'چاودێری', icon: 'fas fa-seedling' },
+        { id: 'games', name: 'یاری', icon: 'fas fa-gamepad' },
+        { id: 'agriculture', name: 'کشتوکاڵی', icon: 'fas fa-tractor' }
+    ];
+
     function closeAllModals() {
         loginModal.style.display = 'none';
         cartModal.style.display = 'none';
         productFormModal.style.display = 'none';
+        categoriesModal.style.display = 'none'; // GORANKARI: مۆداڵی جۆرەکانیش دابخە
     }
 
     function saveCart() {
@@ -374,7 +455,6 @@
 
     function updateCartCount() {
         const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
-        // === GORANKARI: Update har dw cart count ===
         document.querySelectorAll('.cart-count').forEach(el => {
             el.textContent = totalItems;
         });
@@ -392,6 +472,36 @@
             setTimeout(() => document.body.removeChild(notification), 300);
         }, 3000);
     }
+    
+    // GORANKARI: فەنکشنی نوێ بۆ دروستکردنی لیستی جۆرەکان لەناو مۆداڵ
+    function renderCategoriesModal() {
+        modalCategoriesContainer.innerHTML = '';
+        categories.forEach(cat => {
+            const btn = document.createElement('button');
+            btn.className = 'modal-category-btn';
+            btn.dataset.category = cat.id;
+            if (currentCategory === cat.id) {
+                btn.classList.add('active');
+            }
+            btn.innerHTML = `<i class="${cat.icon}"></i> ${cat.name}`;
+            btn.onclick = () => {
+                currentCategory = cat.id;
+                const activeBtn = modalCategoriesContainer.querySelector('.modal-category-btn.active');
+                if(activeBtn) activeBtn.classList.remove('active');
+                btn.classList.add('active');
+                renderProducts();
+                setupProductCardListeners();
+                closeAllModals();
+
+                // ناونیشانی کاڵاکان نوێ بکەرەوە
+                const currentCategoryObject = categories.find(c => c.id === currentCategory);
+                productsSectionTitle.innerHTML = `<i class="${currentCategoryObject.icon}"></i> ${currentCategoryObject.name}ی کاڵاکان`;
+
+            };
+            modalCategoriesContainer.appendChild(btn);
+        });
+    }
+
 
     function renderProducts() {
         productsContainer.innerHTML = '';
@@ -534,15 +644,14 @@
         window.location.href = viberUrl;
     }
     
-    // === GORANKARI: UpdateAdminUI bo dwgmakani xwarawa ===
     function updateAdminUI(isAdmin) {
         if (isAdmin) {
-            logoutBtn.style.display = 'flex'; // Gorra bo flex
+            logoutBtn.style.display = 'flex';
             adminLoginBtn.style.display = 'none';
             addProductBtn.style.display = 'flex';
         } else {
             logoutBtn.style.display = 'none';
-            adminLoginBtn.style.display = 'flex'; // Gorra bo flex
+            adminLoginBtn.style.display = 'flex';
             addProductBtn.style.display = 'none';
         }
         renderProducts();
@@ -563,6 +672,12 @@
         cartBtn.onclick = () => {
             renderCart();
             cartModal.style.display = 'block';
+        };
+
+        // GORANKARI: کرتە لەسەر دوگمەی جۆرەکان مۆداڵەکە دەکاتەوە
+        categoriesBtn.onclick = () => {
+            renderCategoriesModal(); // لیستەکە نوێ بکەرەوە پێش پیشاندانی
+            categoriesModal.style.display = 'block';
         };
         
         addProductBtn.onclick = () => {
@@ -634,28 +749,11 @@
             setupProductCardListeners();
         };
         
-        categoryButtons.forEach(btn => {
-            btn.onclick = () => {
-                document.querySelector('.category-btn.active').classList.remove('active');
-                btn.classList.add('active');
-                currentCategory = btn.getAttribute('data-category');
-                renderProducts();
-                setupProductCardListeners();
-            };
-        });
+        // GORANKARI: ئەم بەشە لابرا چونکە چیتر پێویست نییە
+        // categoryButtons.forEach(...);
         
         whatsappBtn.onclick = sendOrderViaWhatsApp;
         viberBtn.onclick = sendOrderViaViber;
-        
-        // === GORANKARI: onclick bo dwgmakani xwarawa ===
-        bottomNavWhatsApp.onclick = (e) => {
-            e.preventDefault();
-            window.open(WHATSAPP_QR, '_blank');
-        };
-        bottomNavViber.onclick = (e) => {
-            e.preventDefault();
-            window.location.href = `viber://add?number=${VIBER_NUMBER}`;
-        };
     }
 
     function init() {
@@ -678,6 +776,24 @@
     }
 
     document.addEventListener('DOMContentLoaded', init);
+
+    // === Contact Dropdown ===
+    const contactDropdown = document.querySelector('.contact-dropdown');
+    if (contactDropdown) {
+        contactDropdown.onclick = (e) => {
+            if (e.target.closest('#bottomNavWhatsApp') || e.target.closest('#bottomNavViber')) return;
+            contactDropdown.classList.toggle('open');
+        };
+        document.getElementById('bottomNavWhatsApp').onclick = (e) => {
+            e.stopPropagation();
+            window.open("https://wa.me/9647502025383", "_blank");
+        };
+        document.getElementById('bottomNavViber').onclick = (e) => {
+            e.stopPropagation();
+            window.location.href = "viber://add?number=9647502025383";
+        };
+    }
+
 </script>
 
 </body>
