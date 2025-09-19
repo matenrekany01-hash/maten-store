@@ -668,7 +668,7 @@
             
             productCard.innerHTML = `
                 <div class="product-image-container">
-                    <img src="${mainImage}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co.TBD';">
+                    <img src="${mainImage}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co/TBD';">
                     ${discountBadgeHTML}
                 </div>
                 <div class="product-info">
@@ -953,7 +953,8 @@
         };
         document.getElementById('bottomNavViber').onclick = (e) => {
             e.stopPropagation();
-            window.location.href = "viber://add?number=9647502025383";
+            // --- THIS LINE IS CHANGED ---
+            window.location.href = "viber://add?number=%2B9647502025383"; 
         };
     }
 
