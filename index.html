@@ -301,7 +301,9 @@
         <main class="main-content">
             <div class="section">
                 <h3 class="section-title" id="productsSectionTitle"><i class="fas fa-box-open"></i> هەموو کاڵاکان</h3>
-                <div class="products-container" id="productsContainer"></div>
+                <div id="loader" style="text-align: center; padding: 40px; color: var(--dark-gray);"><i class="fas fa-spinner fa-spin fa-2x"></i><p style="margin-top: 10px;">...خەریکی بارکردنی کاڵاکانە</p></div>
+                <div class="products-container" id="productsContainer" style="display: none;">
+                    </div>
             </div>
         </main>
         
@@ -318,8 +320,7 @@
                     <div class="form-group"><label for="productCategory">جۆر:</label>
                         <select id="productCategory" required>
                             <option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>
-                            <option value="electronics">ئەلیکترۆنیات</option><option value="kitchen">چێشتخانە</option><option value="sport">وەرزشی</option><option value="building">بیناسازی</option><option value="medical">پزیشکی</option><option value="car">ئۆتۆمبێل</option><option value="bags">جانتا</option><option value="general">هەمەجۆر</option><option value="farm">چاودێری</option><option value="games">یاری</option><option value="agriculture">کشتوکاڵی</option>
-                        </select>
+                            </select>
                     </div>
                     <div class="form-group"><label for="productDescription">وەسف:</label><textarea id="productDescription" rows="3" required></textarea></div>
                     <div class="form-group"><label for="productImageUrl">لینکی وێنەی کاڵا:</label><input type="text" id="productImageUrl" placeholder="لێرە لینکی وێنەکە دابنێ..." required><div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div></div>
@@ -385,6 +386,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const productsCollection = collection(db, "products");
+    const categoriesCollection = collection(db, "categories"); // کۆڵەکشنی نوێ بۆ جۆرەکان
     
     const CART_KEY = "maten_store_cart";
     let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -394,7 +396,9 @@
     let currentCategory = 'all';
     let currentSearch = '';
     let products = [];
+    let categories = []; // ئێستا ئەمە بەتاڵە و لە فایەربەیسەوە پڕ دەبێتەوە
 
+    // ... (هەمان DOM elementـەکانی پێشوو)
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginModal = document.getElementById('loginModal');
@@ -419,30 +423,18 @@
     const imagePreview = document.getElementById('imagePreview');
     const productImageUrlInput = document.getElementById('productImageUrl');
     const productsSectionTitle = document.getElementById('productsSectionTitle');
+    const loader = document.getElementById('loader');
 
     const categoriesBtn = document.getElementById('categoriesBtn');
     const categoriesSheet = document.getElementById('categoriesSheet');
     const sheetOverlay = document.getElementById('sheet-overlay');
     const sheetCategoriesContainer = document.getElementById('sheetCategoriesContainer');
+    const productCategorySelect = document.getElementById('productCategory');
+
 
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
     
-    const categories = [
-        { id: 'all', name: 'هەموو', icon: 'fas fa-th' },
-        { id: 'electronics', name: 'ئەلیکترۆنیات', icon: 'fas fa-plug' },
-        { id: 'kitchen', name: 'چێشتخانە', icon: 'fas fa-utensils' },
-        { id: 'sport', name: 'وەرزشی', icon: 'fas fa-dumbbell' },
-        { id: 'building', name: 'بیناسازی', icon: 'fas fa-hard-hat' },
-        { id: 'medical', name: 'پزیشکی', icon: 'fas fa-stethoscope' },
-        { id: 'car', name: 'ئۆتۆمبێل', icon: 'fas fa-car' },
-        { id: 'bags', name: 'جانتا', icon: 'fas fa-shopping-bag' },
-        { id: 'general', name: 'هەمەجۆر', icon: 'fas fa-box' },
-        { id: 'farm', name: 'چاودێری', icon: 'fas fa-seedling' },
-        { id: 'games', name: 'یاری', icon: 'fas fa-gamepad' },
-        { id: 'agriculture', name: 'کشتوکاڵی', icon: 'fas fa-tractor' }
-    ];
-
     function closeAllPopups() {
         loginModal.style.display = 'none';
         cartModal.style.display = 'none';
@@ -486,6 +478,18 @@
         }, 3000);
     }
     
+    // فەنکشنی نوێ بۆ پڕکردنەوەی لیستی جۆرەکان لە فۆڕمەکەدا
+    function populateCategoryDropdown() {
+        productCategorySelect.innerHTML = '<option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>'; // پاککردنەوەی پێشوو
+        const categoriesWithoutAll = categories.filter(cat => cat.id !== 'all');
+        categoriesWithoutAll.forEach(cat => {
+            const option = document.createElement('option');
+            option.value = cat.id;
+            option.textContent = cat.name;
+            productCategorySelect.appendChild(option);
+        });
+    }
+
     function renderCategoriesSheet() {
         sheetCategoriesContainer.innerHTML = '';
         categories.forEach(cat => {
@@ -498,7 +502,6 @@
                 currentCategory = cat.id;
                 renderProducts();
                 toggleCategoriesSheet(false);
-
                 const currentCategoryObject = categories.find(c => c.id === currentCategory);
                 productsSectionTitle.innerHTML = `<i class="${currentCategoryObject.icon}"></i> کاڵاکانی ${currentCategoryObject.name}`;
             };
@@ -527,7 +530,6 @@
         productDetailModal.style.display = 'block';
     }
 
-    // ========== فەنکشنی سەرەکی بۆ ڕێکخستنی کارتەکان و دانانی کلیک ==========
     function renderProducts() {
         productsContainer.innerHTML = '';
         const filteredProducts = products.filter(product => 
@@ -556,7 +558,6 @@
 
             const detailsButtonHTML = product.externalLink ? `<a href="${product.externalLink}" target="_blank" class="details-btn"><i class="fas fa-info-circle"></i> زانیاری زیاتر</a>` : '';
             
-            // دروستکردنی ناوەڕۆکی کارتەکە
             productCard.innerHTML = `
                 <div class="product-image-container">
                     <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
@@ -579,8 +580,7 @@
                     ` : ''}
                 </div>
             `;
-
-            // === زیادکردنی Event Listener ڕاستەوخۆ بۆ هەر کارتێک ===
+            
             productCard.addEventListener('click', (event) => {
                 const target = event.target;
                 if (target.closest('.add-to-cart-btn')) {
@@ -589,9 +589,7 @@
                     editProduct(product.id);
                 } else if (target.closest('.delete-btn')) {
                     deleteProduct(product.id);
-                } else if (target.closest('.details-btn')) {
-                    // هیچی پێ ناکرێت چونکە خۆی لینکە و کاری خۆی دەکات
-                } else {
+                } else if (!target.closest('a')) { // prevent modal on details button click
                     showProductDetails(product.id);
                 }
             });
@@ -756,13 +754,14 @@
                     showNotification('کاڵا زیادکرا', 'success');
                 }
                 closeAllPopups();
-                productForm.reset();
             } catch (error) {
                 showNotification('هەڵەیەک لە پاشەکەوتکردن ڕوویدا', 'error');
             } finally {
                 submitButton.disabled = false;
                 submitButton.textContent = editingProductId ? 'نوێکردنەوە' : 'پاشەکەوتکردن';
                 editingProductId = null;
+                productForm.reset(); // پاکردنەوەی فۆڕمەکە لێرە زیاد کرا
+                imagePreview.innerHTML = 'پێشبینی وێنە'; // پاکردنەوەی وێنەکە لێرە زیاد کرا
             }
         };
 
@@ -782,15 +781,31 @@
     }
 
     function init() {
+        // هێنانی جۆرەکان لە فایەربەیس
+        const categoriesQuery = query(categoriesCollection, orderBy("order", "asc"));
+        onSnapshot(categoriesQuery, (snapshot) => {
+            const fetchedCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            categories = [
+                { id: 'all', name: 'هەموو', icon: 'fas fa-th' }, // زیادکردنی "هەموو" بە شێوەی دەستی
+                ...fetchedCategories
+            ];
+            populateCategoryDropdown(); // پڕکردنەوەی فۆڕم
+        });
+
+        // هێنانی کاڵاکان لە فایەربەیس
         const productsQuery = query(productsCollection, orderBy("createdAt", "desc"));
         onSnapshot(productsQuery, (snapshot) => {
             products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            loader.style.display = 'none'; // شاردنەوەی لۆدەر
+            productsContainer.style.display = 'grid'; // پیشاندانی کاڵاکان
             renderProducts();
         });
+
         onAuthStateChanged(auth, (user) => {
             isAdmin = !!(user || sessionStorage.getItem('isAdmin') === 'true');
             updateAdminUI(isAdmin);
         });
+
         updateCartCount();
         setupEventListeners();
     }
