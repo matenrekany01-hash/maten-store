@@ -249,7 +249,6 @@
         max-width: 500px; 
     }
     
-    /* ستایلە زیادکراوەکان بۆ وێنەکان */
     .image-inputs-container { display: flex; flex-direction: column; gap: 10px; }
     .image-input-group { display: flex; gap: 8px; align-items: center; }
     .image-input-group input { flex-grow: 1; }
@@ -265,6 +264,24 @@
     #thumbnailContainer { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
     .thumbnail { width: 60px; height: 60px; object-fit: contain; border: 2px solid var(--medium-gray); border-radius: 4px; cursor: pointer; opacity: 0.6; transition: all 0.2s; }
     .thumbnail.active { border-color: var(--primary-color); opacity: 1; }
+
+    #modalProductDescription {
+        text-align: right;
+        line-height: 1.7;
+        font-size: 15px;
+        white-space: normal;
+    }
+    #modalProductDescription a {
+        color: var(--primary-color);
+        text-decoration: underline;
+        font-weight: bold;
+    }
+    #modalAddToCartBtn {
+        margin: 20px auto 0;
+        width: 90%;
+        max-width: 350px;
+        padding: 10px;
+    }
 </style>
 </head>
 <body>
@@ -361,8 +378,11 @@
                     </div>
                     <div id="thumbnailContainer"></div>
                     <h2 id="modalProductName" style="margin-bottom: 10px; margin-top:15px;"></h2>
+                    
+                    <div id="modalProductPrice" style="font-size: 22px; font-weight: bold; color: var(--accent-color); margin-bottom: 15px;"></div>
                     <p id="modalProductDescription" style="color: #4a5568; margin-bottom: 15px;"></p>
-                    <div id="modalProductPrice" style="font-size: 22px; font-weight: bold; color: var(--accent-color);"></div>
+                    
+                    <button id="modalAddToCartBtn" class="add-to-cart-btn"></button>
                 </div>
             </div>
         </div>
@@ -405,7 +425,6 @@
   measurementId: "G-1PV3DRY2V2"
 };
     
-
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
@@ -458,6 +477,17 @@
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
     
+    function formatDescription(text) {
+        if (!text) return '';
+        let escapedText = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/g;
+        let textWithLinks = escapedText.replace(urlRegex, (url) => {
+            const hyperLink = url.startsWith('http') ? url : `https://www.${url}`;
+            return `<a href="${hyperLink}" target="_blank" rel="noopener noreferrer">${url}</a>`;
+        });
+        return textWithLinks.replace(/\n/g, '<br>');
+    }
+
     function closeAllPopups() {
         loginModal.style.display = 'none';
         cartModal.style.display = 'none';
@@ -588,13 +618,21 @@
         thumbnails.forEach(thumb => thumb.onclick = () => updateSlider(parseInt(thumb.dataset.index)));
 
         document.getElementById('modalProductName').textContent = product.name;
-        document.getElementById('modalProductDescription').textContent = product.description;
+        document.getElementById('modalProductDescription').innerHTML = formatDescription(product.description);
+
         const priceContainer = document.getElementById('modalProductPrice');
         if (product.originalPrice && product.originalPrice > product.price) {
             priceContainer.innerHTML = `<span style="color: var(--accent-color);">${product.price.toLocaleString()} د.ع</span> <del style="color: var(--dark-gray); font-size: 16px; margin-right: 10px;">${product.originalPrice.toLocaleString()} د.ع</del>`;
         } else {
             priceContainer.innerHTML = `<span>${product.price.toLocaleString()} د.ع</span>`;
         }
+
+        const addToCartButton = document.getElementById('modalAddToCartBtn');
+        addToCartButton.innerHTML = `<i class="fas fa-cart-plus"></i> زیادکردن بۆ سەبەتە`;
+        addToCartButton.onclick = () => {
+            addToCart(product.id);
+            closeAllPopups();
+        };
 
         productDetailModal.style.display = 'block';
     }
@@ -630,7 +668,7 @@
             
             productCard.innerHTML = `
                 <div class="product-image-container">
-                    <img src="${mainImage}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
+                    <img src="${mainImage}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https://placehold.co.TBD';">
                     ${discountBadgeHTML}
                 </div>
                 <div class="product-info">
