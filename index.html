@@ -248,6 +248,23 @@
     #productDetailModal .modal-content {
         max-width: 500px; 
     }
+    
+    /* ستایلە زیادکراوەکان بۆ وێنەکان */
+    .image-inputs-container { display: flex; flex-direction: column; gap: 10px; }
+    .image-input-group { display: flex; gap: 8px; align-items: center; }
+    .image-input-group input { flex-grow: 1; }
+    .image-preview-small { width: 40px; height: 40px; object-fit: contain; border-radius: 4px; background-color: var(--light-gray); border: 1px solid var(--medium-gray); }
+
+    #modalImageSlider { position: relative; max-width: 100%; margin-bottom: 15px; }
+    #modalImageContainer { display: flex; overflow: hidden; border-radius: 8px; }
+    #modalImageContainer img { width: 100%; flex-shrink: 0; display: none; object-fit: contain; max-height: 350px; transition: opacity 0.3s ease-in-out; }
+    #modalImageContainer img.active { display: block; }
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.4); color: white; border: none; font-size: 20px; cursor: pointer; z-index: 10; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center; }
+    .slider-btn.prev { left: 10px; }
+    .slider-btn.next { right: 10px; }
+    #thumbnailContainer { display: flex; justify-content: center; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .thumbnail { width: 60px; height: 60px; object-fit: contain; border: 2px solid var(--medium-gray); border-radius: 4px; cursor: pointer; opacity: 0.6; transition: all 0.2s; }
+    .thumbnail.active { border-color: var(--primary-color); opacity: 1; }
 </style>
 </head>
 <body>
@@ -323,7 +340,10 @@
                             </select>
                     </div>
                     <div class="form-group"><label for="productDescription">وەسف:</label><textarea id="productDescription" rows="3" required></textarea></div>
-                    <div class="form-group"><label for="productImageUrl">لینکی وێنەی کاڵا:</label><input type="text" id="productImageUrl" placeholder="لێرە لینکی وێنەکە دابنێ..." required><div id="imagePreview" style="margin-top: 8px; border:1px dashed #ccc; padding:10px; text-align:center;">پێشبینی وێنە</div></div>
+                    <div class="form-group">
+                        <label>لینکەکانی وێنەی کاڵا (تا 4 وێنە):</label>
+                        <div class="image-inputs-container" id="imageInputsContainer"></div>
+                    </div>
                     <div class="form-group"><label for="productExternalLink">لینکی دەرەکی:</label><input type="text" id="productExternalLink" placeholder="بۆ نموونە، لینکی ڤیدیۆ..."></div>
                     <button type="submit">پاشەکەوتکردن</button>
                 </form>
@@ -334,8 +354,13 @@
             <div class="modal-content">
                 <span class="close" onclick="closeAllPopups()">&times;</span>
                 <div id="modalBody" style="text-align: center;">
-                    <img id="modalProductImage" src="" alt="Product Image" style="max-width: 90%; max-height: 300px; margin-bottom: 15px;">
-                    <h2 id="modalProductName" style="margin-bottom: 10px;"></h2>
+                    <div id="modalImageSlider">
+                        <div id="modalImageContainer"></div>
+                        <button class="slider-btn prev" id="prevBtn" style="display: none;">&#10094;</button>
+                        <button class="slider-btn next" id="nextBtn" style="display: none;">&#10095;</button>
+                    </div>
+                    <div id="thumbnailContainer"></div>
+                    <h2 id="modalProductName" style="margin-bottom: 10px; margin-top:15px;"></h2>
                     <p id="modalProductDescription" style="color: #4a5568; margin-bottom: 15px;"></p>
                     <div id="modalProductPrice" style="font-size: 22px; font-weight: bold; color: var(--accent-color);"></div>
                 </div>
@@ -386,7 +411,7 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
     const productsCollection = collection(db, "products");
-    const categoriesCollection = collection(db, "categories"); // کۆڵەکشنی نوێ بۆ جۆرەکان
+    const categoriesCollection = collection(db, "categories");
     
     const CART_KEY = "maten_store_cart";
     let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -396,9 +421,8 @@
     let currentCategory = 'all';
     let currentSearch = '';
     let products = [];
-    let categories = []; // ئێستا ئەمە بەتاڵە و لە فایەربەیسەوە پڕ دەبێتەوە
+    let categories = [];
 
-    // ... (هەمان DOM elementـەکانی پێشوو)
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginModal = document.getElementById('loginModal');
@@ -420,8 +444,7 @@
     const loginForm = document.getElementById('loginForm');
     const productForm = document.getElementById('productForm');
     const formTitle = document.getElementById('formTitle');
-    const imagePreview = document.getElementById('imagePreview');
-    const productImageUrlInput = document.getElementById('productImageUrl');
+    const imageInputsContainer = document.getElementById('imageInputsContainer');
     const productsSectionTitle = document.getElementById('productsSectionTitle');
     const loader = document.getElementById('loader');
 
@@ -440,7 +463,6 @@
         cartModal.style.display = 'none';
         productFormModal.style.display = 'none';
         productDetailModal.style.display = 'none'; 
-        
         categoriesSheet.classList.remove('show');
         sheetOverlay.classList.remove('show');
     }
@@ -478,9 +500,8 @@
         }, 3000);
     }
     
-    // فەنکشنی نوێ بۆ پڕکردنەوەی لیستی جۆرەکان لە فۆڕمەکەدا
     function populateCategoryDropdown() {
-        productCategorySelect.innerHTML = '<option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>'; // پاککردنەوەی پێشوو
+        productCategorySelect.innerHTML = '<option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>';
         const categoriesWithoutAll = categories.filter(cat => cat.id !== 'all');
         categoriesWithoutAll.forEach(cat => {
             const option = document.createElement('option');
@@ -511,18 +532,66 @@
 
     function showProductDetails(productId) {
         const product = products.find(p => p.id === productId);
-        if (!product) return; 
+        if (!product) return;
 
-        document.getElementById('modalProductImage').src = product.image;
+        const imageUrls = (product.imageUrls && product.imageUrls.length > 0) 
+                          ? product.imageUrls 
+                          : (product.image ? [product.image] : []);
+
+        const imageContainer = document.getElementById('modalImageContainer');
+        const thumbnailContainer = document.getElementById('thumbnailContainer');
+        imageContainer.innerHTML = '';
+        thumbnailContainer.innerHTML = '';
+
+        if (imageUrls.length > 0) {
+            imageUrls.forEach((url, index) => {
+                const img = document.createElement('img');
+                img.src = url;
+                if (index === 0) img.classList.add('active');
+                imageContainer.appendChild(img);
+
+                const thumb = document.createElement('img');
+                thumb.src = url;
+                thumb.className = 'thumbnail';
+                if (index === 0) thumb.classList.add('active');
+                thumb.dataset.index = index;
+                thumbnailContainer.appendChild(thumb);
+            });
+        }
+        
+        let currentIndex = 0;
+        const images = imageContainer.querySelectorAll('img');
+        const thumbnails = thumbnailContainer.querySelectorAll('.thumbnail');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateSlider(index) {
+            if (!images[index] || !thumbnails[index]) return;
+            images.forEach(img => img.classList.remove('active'));
+            thumbnails.forEach(thumb => thumb.classList.remove('active'));
+            
+            images[index].classList.add('active');
+            thumbnails[index].classList.add('active');
+            currentIndex = index;
+        }
+
+        if (imageUrls.length > 1) {
+            prevBtn.style.display = 'flex';
+            nextBtn.style.display = 'flex';
+        } else {
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+        }
+
+        prevBtn.onclick = () => updateSlider((currentIndex - 1 + images.length) % images.length);
+        nextBtn.onclick = () => updateSlider((currentIndex + 1) % images.length);
+        thumbnails.forEach(thumb => thumb.onclick = () => updateSlider(parseInt(thumb.dataset.index)));
+
         document.getElementById('modalProductName').textContent = product.name;
         document.getElementById('modalProductDescription').textContent = product.description;
-
         const priceContainer = document.getElementById('modalProductPrice');
         if (product.originalPrice && product.originalPrice > product.price) {
-            priceContainer.innerHTML = `
-                <span style="color: var(--accent-color);">${product.price.toLocaleString()} د.ع</span>
-                <del style="color: var(--dark-gray); font-size: 16px; margin-right: 10px;">${product.originalPrice.toLocaleString()} د.ع</del>
-            `;
+            priceContainer.innerHTML = `<span style="color: var(--accent-color);">${product.price.toLocaleString()} د.ع</span> <del style="color: var(--dark-gray); font-size: 16px; margin-right: 10px;">${product.originalPrice.toLocaleString()} د.ع</del>`;
         } else {
             priceContainer.innerHTML = `<span>${product.price.toLocaleString()} د.ع</span>`;
         }
@@ -546,6 +615,7 @@
             const productCard = document.createElement('div');
             productCard.className = 'product-card';
 
+            const mainImage = (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : (product.image || 'https://placehold.co/300x300/e2e8f0/2d3748?text=No+Image');
             let priceHTML = `<div class="product-price">${product.price.toLocaleString()} د.ع.</div>`;
             let discountBadgeHTML = '';
             const hasDiscount = product.originalPrice && product.originalPrice > product.price;
@@ -560,7 +630,7 @@
             
             productCard.innerHTML = `
                 <div class="product-image-container">
-                    <img src="${product.image}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
+                    <img src="${mainImage}" alt="${product.name}" class="product-image" loading="lazy" onerror="this.onerror=null;this.src='https.placehold.co/300x300/e2e8f0/2d3748?text=Error';">
                     ${discountBadgeHTML}
                 </div>
                 <div class="product-info">
@@ -568,30 +638,20 @@
                     <p class="product-description">${product.description || ''}</p>
                     ${priceHTML}
                     ${detailsButtonHTML}
-                    <button class="add-to-cart-btn">
-                        <i class="fas fa-cart-plus"></i>
-                        <span>زیادکردن بۆ سەبەتە</span>
-                    </button>
+                    <button class="add-to-cart-btn"><i class="fas fa-cart-plus"></i><span>زیادکردن بۆ سەبەتە</span></button>
                 </div>
-                <div class="product-actions">
-                    ${isAdmin ? `
-                        <button class="edit-btn"><i class="fas fa-edit"></i></button>
-                        <button class="delete-btn"><i class="fas fa-trash"></i></button>
-                    ` : ''}
+                <div class="product-actions" style="display: ${isAdmin ? 'flex' : 'none'};">
+                    <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                    <button class="delete-btn"><i class="fas fa-trash"></i></button>
                 </div>
             `;
             
             productCard.addEventListener('click', (event) => {
                 const target = event.target;
-                if (target.closest('.add-to-cart-btn')) {
-                    addToCart(product.id);
-                } else if (target.closest('.edit-btn')) {
-                    editProduct(product.id);
-                } else if (target.closest('.delete-btn')) {
-                    deleteProduct(product.id);
-                } else if (!target.closest('a')) { // prevent modal on details button click
-                    showProductDetails(product.id);
-                }
+                if (target.closest('.add-to-cart-btn')) addToCart(product.id);
+                else if (target.closest('.edit-btn')) editProduct(product.id);
+                else if (target.closest('.delete-btn')) deleteProduct(product.id);
+                else if (!target.closest('a')) showProductDetails(product.id);
             });
 
             productsContainer.appendChild(productCard);
@@ -601,11 +661,26 @@
     function addToCart(productId) {
         const product = products.find(p => p.id === productId);
         if (!product) return;
+        const mainImage = (product.imageUrls && product.imageUrls.length > 0) ? product.imageUrls[0] : (product.image || '');
         const existingItem = cart.find(item => item.id === productId);
         if (existingItem) { existingItem.quantity++; } 
-        else { cart.push({ id: product.id, name: product.name, price: product.price, image: product.image, quantity: 1 }); }
+        else { cart.push({ id: product.id, name: product.name, price: product.price, image: mainImage, quantity: 1 }); }
         saveCart();
         showNotification(`${product.name} زیادکرا بۆ سەبەتە`);
+    }
+
+    function createProductImageInputs(imageUrls = []) {
+        imageInputsContainer.innerHTML = '';
+        for (let i = 0; i < 4; i++) {
+            const url = imageUrls[i] || '';
+            const isRequired = i === 0 ? 'required' : '';
+            const placeholder = i === 0 ? 'لینکی وێنەی یەکەم (سەرەکی)' : `لینکی وێنەی ${['دووەم', 'سێیەم', 'چوارەم'][i-1]}`;
+            const previewSrc = url || `https://placehold.co/40x40/e2e8f0/2d3748?text=${i + 1}`;
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'image-input-group';
+            inputGroup.innerHTML = `<input type="text" class="productImageUrl" placeholder="${placeholder}" value="${url}" ${isRequired}><img src="${previewSrc}" class="image-preview-small" onerror="this.src='https://placehold.co/40x40/e2e8f0/2d3748?text=Err'">`;
+            imageInputsContainer.appendChild(inputGroup);
+        }
     }
 
     function editProduct(productId) {
@@ -613,13 +688,14 @@
         if (!product) { showNotification("هەڵە: کاڵاکە نەدۆزرایەوە!", 'error'); return; }
         editingProductId = productId;
         formTitle.textContent = 'دەستکاری کردنی کاڵا';
+        productForm.reset();
         document.getElementById('productName').value = product.name;
         document.getElementById('productPrice').value = product.price;
         document.getElementById('productOriginalPrice').value = product.originalPrice || '';
         document.getElementById('productCategory').value = product.category;
         document.getElementById('productDescription').value = product.description || '';
-        productImageUrlInput.value = product.image;
-        imagePreview.innerHTML = `<img src="${product.image}" style="max-width: 100%; max-height: 150px;">`;
+        const imageUrls = product.imageUrls || (product.image ? [product.image] : []);
+        createProductImageInputs(imageUrls);
         document.getElementById('productExternalLink').value = product.externalLink || '';
         productForm.querySelector('button[type="submit"]').textContent = 'نوێکردنەوە';
         productFormModal.style.display = 'block';
@@ -632,7 +708,6 @@
             showNotification('کاڵا سڕدرایەوە', 'success');
         } catch (error) {
             showNotification('هەڵە لە سڕینەوەی کاڵا', 'error');
-            console.error("Error removing document: ", error);
         }
     }
 
@@ -676,17 +751,16 @@
 
     function sendOrderViaWhatsApp() {
         const encodedMessage = generateOrderMessage();
-        if (!encodedMessage) return;
-        window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
+        if (encodedMessage) window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
     }
 
     function sendOrderViaViber() {
         const encodedMessage = generateOrderMessage();
-        if (!encodedMessage) return;
-        window.location.href = `viber://chat?number=%2B${VIBER_NUMBER}&text=${encodedMessage}`;
+        if (encodedMessage) window.location.href = `viber://chat?number=%2B${VIBER_NUMBER}&text=${encodedMessage}`;
     }
     
     function updateAdminUI(isAdmin) {
+        document.querySelectorAll('.product-actions').forEach(el => el.style.display = isAdmin ? 'flex' : 'none');
         if (isAdmin) {
             logoutBtn.style.display = 'flex';
             adminLoginBtn.style.display = 'none';
@@ -696,7 +770,6 @@
             adminLoginBtn.style.display = 'flex';
             addProductBtn.style.display = 'none';
         }
-        renderProducts();
     }
 
     function setupEventListeners() {
@@ -705,7 +778,7 @@
         addProductBtn.onclick = () => {
             editingProductId = null;
             productForm.reset();
-            imagePreview.innerHTML = 'پێشبینی وێنە';
+            createProductImageInputs();
             formTitle.textContent = 'زیادکردنی کاڵای نوێ';
             productForm.querySelector('button[type="submit"]').textContent = 'پاشەکەوتکردن';
             productFormModal.style.display = 'block';
@@ -716,6 +789,7 @@
             sessionStorage.removeItem('isAdmin');
             isAdmin = false;
             updateAdminUI(false);
+            renderProducts();
             showNotification('بە سەرکەوتوویی چوویتەدەرەوە', 'success');
         };
 
@@ -728,11 +802,6 @@
             e.preventDefault();
             try {
                 await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('password').value);
-                sessionStorage.setItem('isAdmin', 'true');
-                isAdmin = true;
-                updateAdminUI(true);
-                closeAllPopups();
-                showNotification('بە سەرکەوتوویی چوویتەژوورەوە', 'success');
             } catch (error) {
                 showNotification('ئیمەیڵ یان وشەی نهێنی هەڵەیە', 'error');
             }
@@ -743,8 +812,19 @@
             const submitButton = e.target.querySelector('button[type="submit"]');
             submitButton.disabled = true;
             submitButton.textContent = '...چاوەڕێ بە';
+
+            const imageUrls = Array.from(document.querySelectorAll('.productImageUrl'))
+                                  .map(input => input.value.trim())
+                                  .filter(url => url !== '');
+            if (imageUrls.length === 0) {
+                showNotification('پێویستە بەلایەنی کەمەوە لینکی یەک وێنە دابنێیت', 'error');
+                submitButton.disabled = false;
+                submitButton.textContent = editingProductId ? 'نوێکردنەوە' : 'پاشەکەوتکردن';
+                return;
+            }
+
             try {
-                const productData = { name: document.getElementById('productName').value, price: parseInt(document.getElementById('productPrice').value), originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null, category: document.getElementById('productCategory').value, description: document.getElementById('productDescription').value, image: productImageUrlInput.value, createdAt: Date.now(), externalLink: document.getElementById('productExternalLink').value || null };
+                const productData = { name: document.getElementById('productName').value, price: parseInt(document.getElementById('productPrice').value), originalPrice: parseInt(document.getElementById('productOriginalPrice').value) || null, category: document.getElementById('productCategory').value, description: document.getElementById('productDescription').value, imageUrls: imageUrls, createdAt: Date.now(), externalLink: document.getElementById('productExternalLink').value || null };
                 if (editingProductId) {
                     const { createdAt, ...updateData } = productData;
                     await updateDoc(doc(db, "products", editingProductId), updateData);
@@ -760,51 +840,62 @@
                 submitButton.disabled = false;
                 submitButton.textContent = editingProductId ? 'نوێکردنەوە' : 'پاشەکەوتکردن';
                 editingProductId = null;
-                productForm.reset(); // پاکردنەوەی فۆڕمەکە لێرە زیاد کرا
-                imagePreview.innerHTML = 'پێشبینی وێنە'; // پاکردنەوەی وێنەکە لێرە زیاد کرا
             }
         };
 
-        productImageUrlInput.oninput = () => {
-            const url = productImageUrlInput.value;
-            if (url) { imagePreview.innerHTML = `<img src="${url}" style="max-width: 100%; max-height: 150px;" onerror="this.parentElement.innerHTML='پێشبینی وێنە: لینکەکە هەڵەیە';">`; } 
-            else { imagePreview.innerHTML = 'پێشبینی وێنە'; }
-        };
+        imageInputsContainer.addEventListener('input', (e) => {
+            if (e.target.classList.contains('productImageUrl')) {
+                const previewImg = e.target.nextElementSibling;
+                const url = e.target.value;
+                if (url) {
+                    previewImg.src = url;
+                } else {
+                    const index = Array.from(e.target.parentElement.parentElement.children).indexOf(e.target.parentElement);
+                    previewImg.src = `https://placehold.co/40x40/e2e8f0/2d3748?text=${index + 1}`;
+                }
+            }
+        });
         
-        searchInput.oninput = () => {
-            currentSearch = searchInput.value;
-            renderProducts();
-        };
-        
+        searchInput.oninput = () => { currentSearch = searchInput.value; renderProducts(); };
         whatsappBtn.onclick = sendOrderViaWhatsApp;
         viberBtn.onclick = sendOrderViaViber;
     }
 
     function init() {
-        // هێنانی جۆرەکان لە فایەربەیس
         const categoriesQuery = query(categoriesCollection, orderBy("order", "asc"));
         onSnapshot(categoriesQuery, (snapshot) => {
             const fetchedCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            categories = [
-                { id: 'all', name: 'هەموو', icon: 'fas fa-th' }, // زیادکردنی "هەموو" بە شێوەی دەستی
-                ...fetchedCategories
-            ];
-            populateCategoryDropdown(); // پڕکردنەوەی فۆڕم
+            categories = [ { id: 'all', name: 'هەموو', icon: 'fas fa-th' }, ...fetchedCategories ];
+            populateCategoryDropdown();
         });
 
-        // هێنانی کاڵاکان لە فایەربەیس
         const productsQuery = query(productsCollection, orderBy("createdAt", "desc"));
         onSnapshot(productsQuery, (snapshot) => {
             products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            loader.style.display = 'none'; // شاردنەوەی لۆدەر
-            productsContainer.style.display = 'grid'; // پیشاندانی کاڵاکان
+            loader.style.display = 'none';
+            productsContainer.style.display = 'grid';
             renderProducts();
+            if (isAdmin) {
+                updateAdminUI(true);
+            }
         });
 
         onAuthStateChanged(auth, (user) => {
-            isAdmin = !!(user || sessionStorage.getItem('isAdmin') === 'true');
+            isAdmin = !!user;
+            if (user) {
+                sessionStorage.setItem('isAdmin', 'true');
+                showNotification('بە سەرکەوتوویی چوویتەژوورەوە', 'success');
+                closeAllPopups();
+            }
             updateAdminUI(isAdmin);
+            renderProducts();
         });
+        
+        if (sessionStorage.getItem('isAdmin') === 'true' && !auth.currentUser) {
+            isAdmin = true;
+            updateAdminUI(true);
+            renderProducts();
+        }
 
         updateCartCount();
         setupEventListeners();
