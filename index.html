@@ -370,27 +370,23 @@
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-    
-    // The rest of your JavaScript code follows...
-    // I am omitting the full JS code here for brevity as it was correct in the previous version.
-    // The user needs the full file, so I will provide it.
-    
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY", // Replaced for security
-      authDomain: "maten-store.firebaseapp.com",
-      projectId: "maten-store",
-      storageBucket: "maten-store.appspot.com", 
-      messagingSenderId: "137714858202",
-      appId: "1:137714858202:web:a3db3b3591742c3356cde3",
-      measurementId: "G-TM6SG77H5G"
-    };
+  apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
+  authDomain: "maten-store.firebaseapp.com",
+  projectId: "maten-store",
+  storageBucket: "maten-store.firebasestorage.app",
+  messagingSenderId: "137714858202",
+  appId: "1:137714858202:web:e2443a0b26aac6bb56cde3",
+  measurementId: "G-1PV3DRY2V2"
+};
+    
 
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
     const db = getFirestore(app);
     const productsCollection = collection(db, "products");
-    const categoriesCollection = collection(db, "categories");
+    const categoriesCollection = collection(db, "categories"); // کۆڵەکشنی نوێ بۆ جۆرەکان
     
     const CART_KEY = "maten_store_cart";
     let cart = JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -400,8 +396,9 @@
     let currentCategory = 'all';
     let currentSearch = '';
     let products = [];
-    let categories = []; 
+    let categories = []; // ئێستا ئەمە بەتاڵە و لە فایەربەیسەوە پڕ دەبێتەوە
 
+    // ... (هەمان DOM elementـەکانی پێشوو)
     const adminLoginBtn = document.getElementById('adminLoginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
     const loginModal = document.getElementById('loginModal');
@@ -427,11 +424,13 @@
     const productImageUrlInput = document.getElementById('productImageUrl');
     const productsSectionTitle = document.getElementById('productsSectionTitle');
     const loader = document.getElementById('loader');
+
     const categoriesBtn = document.getElementById('categoriesBtn');
     const categoriesSheet = document.getElementById('categoriesSheet');
     const sheetOverlay = document.getElementById('sheet-overlay');
     const sheetCategoriesContainer = document.getElementById('sheetCategoriesContainer');
     const productCategorySelect = document.getElementById('productCategory');
+
 
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
@@ -479,8 +478,9 @@
         }, 3000);
     }
     
+    // فەنکشنی نوێ بۆ پڕکردنەوەی لیستی جۆرەکان لە فۆڕمەکەدا
     function populateCategoryDropdown() {
-        productCategorySelect.innerHTML = '<option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>';
+        productCategorySelect.innerHTML = '<option value="" disabled selected>-- جۆرێک هەڵبژێرە --</option>'; // پاککردنەوەی پێشوو
         const categoriesWithoutAll = categories.filter(cat => cat.id !== 'all');
         categoriesWithoutAll.forEach(cat => {
             const option = document.createElement('option');
@@ -589,7 +589,7 @@
                     editProduct(product.id);
                 } else if (target.closest('.delete-btn')) {
                     deleteProduct(product.id);
-                } else if (!target.closest('a')) { 
+                } else if (!target.closest('a')) { // prevent modal on details button click
                     showProductDetails(product.id);
                 }
             });
@@ -760,8 +760,8 @@
                 submitButton.disabled = false;
                 submitButton.textContent = editingProductId ? 'نوێکردنەوە' : 'پاشەکەوتکردن';
                 editingProductId = null;
-                productForm.reset(); 
-                imagePreview.innerHTML = 'پێشبینی وێنە'; 
+                productForm.reset(); // پاکردنەوەی فۆڕمەکە لێرە زیاد کرا
+                imagePreview.innerHTML = 'پێشبینی وێنە'; // پاکردنەوەی وێنەکە لێرە زیاد کرا
             }
         };
 
@@ -781,21 +781,23 @@
     }
 
     function init() {
+        // هێنانی جۆرەکان لە فایەربەیس
         const categoriesQuery = query(categoriesCollection, orderBy("order", "asc"));
         onSnapshot(categoriesQuery, (snapshot) => {
             const fetchedCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             categories = [
-                { id: 'all', name: 'هەموو', icon: 'fas fa-th' },
+                { id: 'all', name: 'هەموو', icon: 'fas fa-th' }, // زیادکردنی "هەموو" بە شێوەی دەستی
                 ...fetchedCategories
             ];
-            populateCategoryDropdown();
+            populateCategoryDropdown(); // پڕکردنەوەی فۆڕم
         });
 
+        // هێنانی کاڵاکان لە فایەربەیس
         const productsQuery = query(productsCollection, orderBy("createdAt", "desc"));
         onSnapshot(productsQuery, (snapshot) => {
             products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            loader.style.display = 'none'; 
-            productsContainer.style.display = 'grid'; 
+            loader.style.display = 'none'; // شاردنەوەی لۆدەر
+            productsContainer.style.display = 'grid'; // پیشاندانی کاڵاکان
             renderProducts();
         });
 
