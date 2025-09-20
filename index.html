@@ -6,7 +6,12 @@
     <title>Maten Store - فرۆشتن و کاڵا</title>
     <meta http-equiv="Content-Language" content="ku">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1a365d">
+
     <style>
+        /* ... هەموو کۆدی CSSـەکەت لێرەدا وەک خۆی دەمێنێتەوە ... */
         @font-face {
             font-family: 'NRT';
             src: url('https://www.nrttv.com/css/fonts/NRT-Reg.woff2') format('woff2'),
@@ -282,7 +287,7 @@
         max-width: 350px;
         padding: 10px;
     }
-</style>
+    </style>
 </head>
 <body>
     <div class="app-container">
@@ -416,14 +421,14 @@
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
     const firebaseConfig = {
-  apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
-  authDomain: "maten-store.firebaseapp.com",
-  projectId: "maten-store",
-  storageBucket: "maten-store.firebasestorage.app",
-  messagingSenderId: "137714858202",
-  appId: "1:137714858202:web:e2443a0b26aac6bb56cde3",
-  measurementId: "G-1PV3DRY2V2"
-};
+      apiKey: "AIzaSyBxyy9e0FIsavLpWCFRMqgIbUU2IJV8rqE",
+      authDomain: "maten-store.firebaseapp.com",
+      projectId: "maten-store",
+      storageBucket: "maten-store.appspot.com",
+      messagingSenderId: "137714858202",
+      appId: "1:137714858202:web:e2443a0b26aac6bb56cde3",
+      measurementId: "G-1PV3DRY2V2"
+    };
     
     const app = initializeApp(firebaseConfig);
     const analytics = getAnalytics(app);
@@ -472,7 +477,6 @@
     const sheetOverlay = document.getElementById('sheet-overlay');
     const sheetCategoriesContainer = document.getElementById('sheetCategoriesContainer');
     const productCategorySelect = document.getElementById('productCategory');
-
 
     const WHATSAPP_NUMBER = '9647502025383';
     const VIBER_NUMBER = '9647502025383';
