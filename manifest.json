@@ -1,7 +1,7 @@
 {
   "name": "Maten Store",
   "short_name": "Maten",
-  "start_url": "/index.html",
+  "start_url": "/maten-store/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#1a365d",

@@ -1,7 +1,7 @@
 const CACHE_NAME = 'maten-store-cache-v1';
 const urlsToCache = [
-  '/',
-  '/index.html'
+  '/maten-store/',
+  '/maten-store/index.html'
 ];
 
 self.addEventListener('install', event => {
